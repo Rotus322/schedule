@@ -11,12 +11,6 @@ import json
 EXP_PER_PRESS = 10
 EXP_PER_LEVEL = 100
 
-# Google Sheets の設定
-SCOPE = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-SERVICE_ACCOUNT_FILE = "service_account.json"  # ダウンロードしたJSON
-SPREADSHEET_NAME = "study_log"
-SHEET_NAME = "log"
-
 # ----------------------
 # Google Sheets 接続
 # ----------------------
@@ -110,3 +104,8 @@ if df.empty:
     st.write("まだ記録がありません。")
 else:
     st.dataframe(df.sort_values("date", ascending=False))
+
+# CSV ダウンロード
+if not df.empty:
+    csv_bytes = df.to_csv(index=False).encode()
+    st.download_button("CSVをダウンロード", data=csv_bytes, file_name="study_log.csv", mime="text/csv")
