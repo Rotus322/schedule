@@ -9,7 +9,7 @@ import json
 # 設定
 # ----------------------
 EXP_PER_PRESS = 10
-EXP_PER_LEVEL = 100
+EXP_PER_LEVEL = 150
 
 SPREADSHEET_NAME = "study_log"
 SHEET_NAME = "log"
@@ -81,8 +81,8 @@ def exp_within_level(total_exp_val):
 # ----------------------
 # UI
 # ----------------------
-st.set_page_config(page_title="国家試験応援RPG", page_icon="🎓")
-st.title("🎮 国家試験応援RPG（クラウド版）")
+st.set_page_config(page_title="国試成長記録", page_icon="📒")
+st.title("国試勉強")
 st.write("勉強終わったらボタンを押してキャラを育てよう！")
 
 df = load_data()
