@@ -82,7 +82,7 @@ def exp_within_level(total_exp_val):
 # UI
 # ----------------------
 st.set_page_config(page_title="国試成長記録", page_icon="📒")
-st.title("国試勉強")
+st.title("♡きゅらちゃん育成アプリ♡")
 st.write("勉強終わったらボタンを押してキャラを育てよう！")
 
 df = load_data()
