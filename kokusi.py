@@ -91,7 +91,7 @@ lvl = current_level(tot_exp)
 exp_in_lvl = exp_within_level(tot_exp)
 
 # キャラ表示
-st.subheader("キャラ")
+
 emoji_map = {1:"tamago.jpg",
              2:"sa.jpg",
              3:"youtien.jpg",
