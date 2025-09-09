@@ -3,6 +3,7 @@ import pandas as pd
 import datetime
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
+import json
 
 # ----------------------
 # 設定
@@ -20,9 +21,16 @@ SHEET_NAME = "log"
 # Google Sheets 接続
 # ----------------------
 def connect_gsheets():
-    creds = ServiceAccountCredentials.from_json_keyfile_name(SERVICE_ACCOUNT_FILE, SCOPE)
+    # Streamlit Secrets から JSON を取得
+    creds_json = st.secrets["gcp_service_account"]
+    creds_dict = json.loads(creds_json)
+    
+    # 認証
+    scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
+    creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
+    
     client = gspread.authorize(creds)
-    sheet = client.open(SPREADSHEET_NAME).worksheet(SHEET_NAME)
+    sheet = client.open("study_log").worksheet("log")  # スプレッドシート名とタブ名
     return sheet
 
 def load_data():
