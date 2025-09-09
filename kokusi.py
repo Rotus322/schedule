@@ -37,11 +37,14 @@ def load_data():
         df = pd.DataFrame(data)
         if "date" in df.columns:
             df["date"] = pd.to_datetime(df["date"])
+        if "exp" not in df.columns:
+            df["exp"] = 0
+        if "note" not in df.columns:
+            df["note"] = ""
         return df
     except Exception as e:
         st.error(f"Googleスプレッドシート読み込み失敗: {e}")
         return pd.DataFrame(columns=["date","exp","note"])
-
 def append_entry(exp, note=""):
     df = load_data()
     now = pd.Timestamp(datetime.datetime.now()).floor('s')
