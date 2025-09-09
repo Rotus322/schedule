@@ -11,7 +11,6 @@ import json
 EXP_PER_PRESS = 10
 EXP_PER_LEVEL = 100
 
-# スプレッドシート名・タブ名
 SPREADSHEET_NAME = "study_log"
 SHEET_NAME = "log"
 
@@ -19,10 +18,8 @@ SHEET_NAME = "log"
 # Google Sheets 接続
 # ----------------------
 def connect_gsheets():
-    # Streamlit Secrets から JSON を取得
     creds_json = st.secrets["gcp_service_account"]
     creds_dict = json.loads(creds_json)
-    
     scope = ["https://spreadsheets.google.com/feeds",
              "https://www.googleapis.com/auth/drive"]
     creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
@@ -35,7 +32,7 @@ def load_data():
         sheet = connect_gsheets()
         data = sheet.get_all_records()
         df = pd.DataFrame(data)
-        # 列がない場合は作る
+        # 列がなければ作る
         if "date" not in df.columns:
             df["date"] = pd.Timestamp.now()
         else:
@@ -52,10 +49,10 @@ def load_data():
 def append_entry(exp, note=""):
     try:
         sheet = connect_gsheets()
-        now = pd.Timestamp(datetime.datetime.now()).floor('s')
-        new_entry = {"date": now.strftime("%Y-%m-%d %H:%M:%S"), "exp": exp, "note": note}
-        sheet.append_row(list(new_entry.values()))
-        # Google Sheets から再読み込みして最新 df を返す
+        now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        # 列順は date, exp, note に合わせる
+        sheet.append_row([now, exp, note])
+        # 追加後に再読み込みして df を返す
         df = load_data()
         return df
     except Exception as e:
@@ -98,7 +95,7 @@ st.write(f"経験値: **{exp_in_lvl} / {EXP_PER_LEVEL}** (累計 {tot_exp} EXP)"
 if "last_level" not in st.session_state:
     st.session_state["last_level"] = lvl
 
-# 勉強終了ボタンとメモ入力
+# 勉強終了ボタンとメモ
 st.subheader("勉強終了")
 note = st.text_input("メモ（任意）", value="", key="note_input")
 if st.button("✅ 今日の勉強終わった！"):
@@ -110,6 +107,7 @@ if st.button("✅ 今日の勉強終わった！"):
         st.balloons()
         st.success(f"🎉 レベルアップ！ Lv{st.session_state['last_level']} → Lv{new_lvl}")
     st.session_state["last_level"] = new_lvl
+    st.write(df.tail())  # 最新データ確認用（削除可）
 
 # 記録表示
 st.subheader("記録（新しい順）")
