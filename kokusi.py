@@ -93,15 +93,14 @@ exp_in_lvl = exp_within_level(tot_exp)
 # キャラ表示
 st.subheader("キャラ")
 emoji_map = {1:"tamago.jpg",
-             2:"ware.jpg",
-             3:"sa.jpg",
-             4:"youtien.jpg",
-             5:"syougaku.jpg",
-             6:"tyuugaku.jpg",
-             7:"koukou.jpg",
-             8:"daigaku.jpg",
-             9:"juken.jpg",
-             10:"kngosi.jpg"}
+             2:"sa.jpg",
+             3:"youtien.jpg",
+             4:"syougaku.jpg",
+             5:"tyuugaku.jpg",
+             6:"koukou.jpg",
+             7:"daigaku.jpg",
+             8:"juken.jpg",
+             9:"kngosi.jpg"}
 display_image = emoji_map.get(min(lvl, max(emoji_map.keys())), "default.jpg")
 st.image(display_image, width=200)
 st.write(f"レベル: **Lv {lvl}**")
@@ -114,7 +113,7 @@ if "last_level" not in st.session_state:
 # 勉強終了ボタンとメモ
 st.subheader("勉強終了")
 note = st.text_input("メモ（任意）", value="", key="note_input")
-if st.button("✅ 今日の勉強終わった！"):
+if st.button("✅ 国試の勉強終わった！"):
     df = append_entry(EXP_PER_PRESS, note)
     tot_exp = total_exp(df)
     new_lvl = current_level(tot_exp)
