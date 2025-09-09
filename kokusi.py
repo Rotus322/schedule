@@ -92,9 +92,18 @@ exp_in_lvl = exp_within_level(tot_exp)
 
 # キャラ表示
 st.subheader("キャラ")
-emoji_map = {1:"😪",2:"🙂",3:"😤",4:"🧠",5:"🩺",6:"🏆"}
-display_emoji = emoji_map.get(min(lvl, max(emoji_map.keys())), "💪")
-st.markdown(f"## {display_emoji}")
+emoji_map = {1:"tamago.jpg",
+             2:"ware.jpg",
+             3:"sa.jpg",
+             4:"youtien.jpg",
+             5:"syougaku.jpg",
+             6:"tyuugaku.jpg",
+             7:"koukou.jpg",
+             8:"daigaku.jpg",
+             9:"juken.jpg",
+             10:"kngosi.jpg"}
+display_image = emoji_map.get(min(lvl, max(emoji_map.keys())), "default.jpg")
+st.image(display_image, width=200)
 st.write(f"レベル: **Lv {lvl}**")
 st.progress(exp_in_lvl / EXP_PER_LEVEL)
 st.write(f"経験値: **{exp_in_lvl} / {EXP_PER_LEVEL}** (累計 {tot_exp} EXP)")
