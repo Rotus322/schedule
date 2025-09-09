@@ -50,15 +50,17 @@ def load_data():
         return pd.DataFrame(columns=["date","exp","note"])
 
 def append_entry(exp, note=""):
-    df = load_data()
-    now = pd.Timestamp(datetime.datetime.now()).floor('s')
-    new_entry = {"date": now.strftime("%Y-%m-%d %H:%M:%S"), "exp": exp, "note": note}
     try:
         sheet = connect_gsheets()
+        now = pd.Timestamp(datetime.datetime.now()).floor('s')
+        new_entry = {"date": now.strftime("%Y-%m-%d %H:%M:%S"), "exp": exp, "note": note}
         sheet.append_row(list(new_entry.values()))
+        # Google Sheets から再読み込みして最新 df を返す
+        df = load_data()
+        return df
     except Exception as e:
         st.error(f"Googleスプレッドシート書き込み失敗: {e}")
-    return df
+        return load_data()
 
 # ----------------------
 # レベル計算
