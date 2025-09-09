@@ -14,6 +14,9 @@ EXP_PER_LEVEL = 100
 # ----------------------
 # Google Sheets 接続
 # ----------------------
+SPREADSHEET_NAME = "study_log"
+SHEET_NAME = "log"
+
 def connect_gsheets():
     # Streamlit Secrets から JSON を取得
     creds_json = st.secrets["gcp_service_account"]
