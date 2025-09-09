@@ -113,7 +113,7 @@ if "last_level" not in st.session_state:
 # 勉強終了ボタンとメモ
 st.subheader("勉強終了")
 note = st.text_input("メモ（任意）", value="", key="note_input")
-if st.button("✅ 国試の勉強終わった！"):
+if st.button("✅ 今日の勉強終わった！"):
     df = append_entry(EXP_PER_PRESS, note)
     tot_exp = total_exp(df)
     new_lvl = current_level(tot_exp)
@@ -134,8 +134,8 @@ if st.button("❌ 勉強終わらなかった…"):
     st.write(df.tail())  # 最新データ確認用
 
 # 🔬 研究頑張った
-if st.button("🔬 研究頑張った！"):
-    df = append_entry(15, "研究頑張った")
+if st.button("🔬 ゼミ頑張った！"):
+    df = append_entry(15, "ゼミ頑張った")
     tot_exp = total_exp(df)
     new_lvl = current_level(tot_exp)
     st.success(f"経験値 +15！累計 {tot_exp} EXP")
