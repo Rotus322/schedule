@@ -124,6 +124,27 @@ if st.button("✅ 国試の勉強終わった！"):
     st.session_state["last_level"] = new_lvl
     st.write(df.tail())  # 最新データ確認用（削除可）
 
+# ❌ 勉強終わらなかった
+if st.button("❌ 勉強終わらなかった…"):
+    df = append_entry(0, "勉強終わらなかった")
+    tot_exp = total_exp(df)
+    new_lvl = current_level(tot_exp)
+    st.warning("今日は勉強終わらなかった…😢")
+    st.session_state["last_level"] = new_lvl
+    st.write(df.tail())  # 最新データ確認用
+
+# 🔬 研究頑張った
+if st.button("🔬 研究頑張った！"):
+    df = append_entry(15, "研究頑張った")
+    tot_exp = total_exp(df)
+    new_lvl = current_level(tot_exp)
+    st.success(f"経験値 +15！累計 {tot_exp} EXP")
+    if new_lvl > st.session_state["last_level"]:
+        st.balloons()
+        st.success(f"🎉 レベルアップ！ Lv{st.session_state['last_level']} → Lv{new_lvl}")
+    st.session_state["last_level"] = new_lvl
+    st.write(df.tail())  # 最新データ確認用
+
 # 記録表示
 st.subheader("記録（新しい順）")
 if df.empty:
