@@ -8,6 +8,18 @@ import json
 import base64
 
 
+# キャラ表示
+
+emoji_map = {1:"tamago.png",
+             2:"sa.jpg",
+             3:"youtien.png",
+             4:"syougaku.png",
+             5:"tyuugaku.png",
+             6:"koukou.png",
+             7:"daigaku.png",
+             8:"juken.png",
+             9:"kngosi.png"}
+display_image = emoji_map.get(min(lvl, max(emoji_map.keys())), "default.jpg")
 st.markdown(
     """
     <style>
@@ -18,6 +30,44 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
+
+def set_background_with_character(background_file, character_file):
+    # 背景
+    with open(background_file, "rb") as f:
+        bg_data = f.read()
+    bg_encoded = base64.b64encode(bg_data).decode()
+
+    # キャラ
+    with open(character_file, "rb") as f:
+        char_data = f.read()
+    char_encoded = base64.b64encode(char_data).decode()
+
+    st.markdown(
+        f"""
+        <style>
+        .background {{
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            background-image: url("data:image/jpeg;base64,{bg_encoded}");
+            background-size: cover;
+            background-position: center;
+        }}
+        .character {{
+            position: absolute;
+            top: 50%;  /* 縦中央 */
+            left: 50%; /* 横中央 */
+            transform: translate(-50%, -50%);
+            width: 300px;  /* キャラの大きさ */
+        }}
+        </style>
+        <div class="background">
+            <img class="character" src="data:image/jpeg;base64,{char_encoded}">
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+set_background_with_character("mori.jpg", display_image)
 
 st.markdown(
     """
@@ -145,18 +195,6 @@ tot_exp = total_exp(df)
 lvl = current_level(tot_exp)
 exp_in_lvl = exp_within_level(tot_exp)
 
-# キャラ表示
-
-emoji_map = {1:"tamago.png",
-             2:"sa.jpg",
-             3:"youtien.png",
-             4:"syougaku.png",
-             5:"tyuugaku.png",
-             6:"koukou.png",
-             7:"daigaku.png",
-             8:"juken.png",
-             9:"kngosi.png"}
-display_image = emoji_map.get(min(lvl, max(emoji_map.keys())), "default.jpg")
 st.markdown("<div style='text-align: center;'>", unsafe_allow_html=True)
 st.image(display_image, width=150)
 st.markdown("</div>", unsafe_allow_html=True)
@@ -212,40 +250,3 @@ else:
     else:
         st.dataframe(df)
 
-def set_background_with_character(background_file, character_file):
-    # 背景
-    with open(background_file, "rb") as f:
-        bg_data = f.read()
-    bg_encoded = base64.b64encode(bg_data).decode()
-
-    # キャラ
-    with open(character_file, "rb") as f:
-        char_data = f.read()
-    char_encoded = base64.b64encode(char_data).decode()
-
-    st.markdown(
-        f"""
-        <style>
-        .background {{
-            position: relative;
-            width: 100%;
-            height: 100vh;
-            background-image: url("data:image/jpeg;base64,{bg_encoded}");
-            background-size: cover;
-            background-position: center;
-        }}
-        .character {{
-            position: absolute;
-            top: 50%;  /* 縦中央 */
-            left: 50%; /* 横中央 */
-            transform: translate(-50%, -50%);
-            width: 300px;  /* キャラの大きさ */
-        }}
-        </style>
-        <div class="background">
-            <img class="character" src="data:image/jpeg;base64,{char_encoded}">
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-set_background_with_character("mori.jpg", display_image)
