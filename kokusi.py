@@ -45,7 +45,7 @@ st.markdown(
 # ------------------------
 # キャラ表示（経験値の上）
 # ------------------------
-display_image = "tamago_char.png"
+display_image = "tamago.png"
 st.markdown("<div style='text-align:center;'>", unsafe_allow_html=True)
 st.image(display_image, width=100)
 st.markdown("</div>", unsafe_allow_html=True)
@@ -53,7 +53,7 @@ st.markdown("</div>", unsafe_allow_html=True)
 # ------------------------
 # 卵の表示（後で座標で動かせるようにdivでラップ）
 # ------------------------
-egg_image = "tamago_egg.png"
+egg_image = "tamago.png"
 egg_top = 200   # 卵の上位置(px)
 egg_left = 100  # 卵の左位置(px)
 
