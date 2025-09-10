@@ -54,7 +54,7 @@ def set_page_background_with_egg(background_file, egg_file):
 def get_character_image(level):
     emoji_map = {
         1: "tamago.png",
-        2: "sa.jpg",
+        2: "sa.png",
         3: "youtien.png",
         4: "syougaku.png",
         5: "tyuugaku.png",
