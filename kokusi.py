@@ -5,6 +5,24 @@ import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 import json
 
+page_bg = """
+<style>
+[data-testid="stAppViewContainer"] {
+    background-color: #f0f8ff; /* 水色系の背景 */
+    /* 背景画像にしたい場合は以下を有効化 */
+    /* background-image: url("https://www.example.com/your_image.jpg");
+       background-size: cover; */
+}
+</style>
+"""
+st.markdown(
+    """
+    <div style="text-align: center;">
+        <img src="https://www.example.com/your_photo.jpg" width="300">
+    </div>
+    """,
+    unsafe_allow_html=True
+)
 # ----------------------
 # 設定
 # ----------------------
