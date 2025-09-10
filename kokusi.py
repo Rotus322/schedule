@@ -9,7 +9,7 @@ import base64
 # ----------------------
 # 背景設定
 # ----------------------
-def set_page_background_with_egg(background_file, egg_file):
+def set_page_background_with_egg(background_file, egg_file,egg_size):
     # 背景
     with open(background_file, "rb") as f:
         bg_data = f.read()
