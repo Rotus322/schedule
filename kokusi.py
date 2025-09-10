@@ -250,4 +250,4 @@ def set_background_with_character(background_file, character_file):
         """,
         unsafe_allow_html=True
     )
-set_background_with_character("mori.jpeg", "display_image")
+set_background_with_character("mori.png", "display_image")
