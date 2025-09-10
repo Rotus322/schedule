@@ -63,15 +63,15 @@ display_background_and_egg("mori.jpg", "tamago.png", egg_pos=(60, 30))
 
 # キャラクター画像（文字の上に表示）
 emoji_map = {
-    1:"tamago_char.png",
-    2:"sa_char.png",
-    3:"youtien_char.png",
-    4:"syougaku_char.png",
-    5:"tyuugaku_char.png",
-    6:"koukou_char.png",
-    7:"daigaku_char.png",
-    8:"juken_char.png",
-    9:"kngosi_char.png"
+    1:"tamago.png",
+    2:"sa.jpg",
+    3:"youtien.png",
+    4:"syougaku.png",
+    5:"tyuugaku.png",
+    6:"koukou.png",
+    7:"daigaku.png",
+    8:"juken.png",
+    9:"kngosi.png"
 }
 display_image = emoji_map.get(min(lvl, max(emoji_map.keys())), "default_char.png")
 
