@@ -37,6 +37,23 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
+
+st.markdown(
+    """
+    <style>
+    div.stButton > button {
+        background-color: transparent;
+        color: white;
+        border: 2px solid white;  /* 好きな色や太さに変更可能 */
+        border-radius: 10px;
+    }
+    div.stButton > button:hover {
+        background-color: rgba(255, 255, 255, 0.2);  /* ホバー時の色 */
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 # ----------------------
 # 設定
 # ----------------------
