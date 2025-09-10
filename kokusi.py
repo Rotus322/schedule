@@ -142,14 +142,14 @@ exp_in_lvl = exp_within_level(tot_exp)
 # キャラ表示
 
 emoji_map = {1:"tamago.png",
-             2:"sa.jpg",
-             3:"youtien.jpg",
-             4:"syougaku.jpg",
-             5:"tyuugaku.jpg",
-             6:"koukou.jpg",
-             7:"daigaku.jpg",
-             8:"juken.jpg",
-             9:"kngosi.jpg"}
+             2:"sa.png",
+             3:"youtien.png",
+             4:"syougaku.png",
+             5:"tyuugaku.png",
+             6:"koukou.png",
+             7:"daigaku.png",
+             8:"juken.png",
+             9:"kngosi.png"}
 display_image = emoji_map.get(min(lvl, max(emoji_map.keys())), "default.jpg")
 st.markdown("<div style='text-align: center;'>", unsafe_allow_html=True)
 st.image(display_image, width=150)
