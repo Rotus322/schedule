@@ -54,6 +54,31 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
+
+st.markdown(
+    """
+    <style>
+    /* ページ全体 */
+    .stApp {
+        text-align: center;
+    }
+
+    /* ボタンも中央に */
+    div.stButton {
+        display: flex;
+        justify-content: center;
+        margin: 10px auto;
+    }
+
+    /* テーブルも中央に */
+    div.stDataFrameWrapper {
+        display: flex;
+        justify-content: center;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 # ----------------------
 # 設定
 # ----------------------
@@ -142,7 +167,7 @@ exp_in_lvl = exp_within_level(tot_exp)
 # キャラ表示
 
 emoji_map = {1:"tamago.png",
-             2:"sa.png",
+             2:"sa.jpg",
              3:"youtien.png",
              4:"syougaku.png",
              5:"tyuugaku.png",
