@@ -15,7 +15,7 @@ def set_background(image_file):
         f"""
         <style>
         .stApp {{
-            background-image: url("data:hanabi.jpg;base64,{encoded}");
+            background-image: url("data:jpg;base64,{encoded}");
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -26,7 +26,7 @@ def set_background(image_file):
     )
 
 # 呼び出し（背景設定）
-set_background("background.jpg")
+set_background("hanabi.jpg")
 
 # ----------------------
 # 設定
