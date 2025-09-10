@@ -8,7 +8,7 @@ import json
 page_bg = """
 <style>
 [data-testid="stAppViewContainer"] {
-     background-image: url("https://github.com/Rotus322/schedule/blob/main/hanabi.jpeg");
+     background-image: ("hanabi.jpeg");
        background-size: cover;
 }
 </style>
