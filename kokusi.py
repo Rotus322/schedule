@@ -37,7 +37,16 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
-
+display_image = "tamago.jpg"  # キャラ画像
+st.markdown(
+    f"""
+    <div style='position: relative; margin-top: -50px;'>
+        <img src="data:image/jpeg;base64,{base64.b64encode(open(display_image,'rb').read()).decode()}" 
+             style='width:300px; display:block; margin-left:auto; margin-right:auto;'>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
 st.markdown(
     """
     <style>
