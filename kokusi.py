@@ -17,14 +17,6 @@ page_bg = """
 """
 st.markdown(page_bg, unsafe_allow_html=True)
 
-st.markdown(
-    """
-    <div style="text-align: center;">
-        <img src="https://www.example.com/your_photo.jpg" width="300">
-    </div>
-    """,
-    unsafe_allow_html=True
-)
 # ----------------------
 # 設定
 # ----------------------
@@ -122,7 +114,13 @@ emoji_map = {1:"tamago.jpg",
              8:"juken.jpg",
              9:"kngosi.jpg"}
 display_image = emoji_map.get(min(lvl, max(emoji_map.keys())), "default.jpg")
-st.image(display_image, width=200)
+st.image(
+    """
+    <div style="text-align: center;">
+        <img src="display_image" width="250">
+    </div>
+    """,
+    unsafe_allow_html=True)
 st.write(f"レベル: **Lv {lvl}**")
 st.progress(exp_in_lvl / EXP_PER_LEVEL)
 st.write(f"経験値: **{exp_in_lvl} / {EXP_PER_LEVEL}** (累計 {tot_exp} EXP)")
