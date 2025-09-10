@@ -83,7 +83,7 @@ def display_character(level, width=150):
 # ----------------------
 # 設定
 # ----------------------
-EXP_PER_PRESS = 150
+EXP_PER_PRESS = 10
 EXP_PER_LEVEL = 150
 SPREADSHEET_NAME = "study_log"
 SHEET_NAME = "log"
@@ -155,7 +155,7 @@ exp_in_lvl = exp_within_level(tot_exp)
 
 # 背景と卵をキャラと同じ画像で設定
 egg_image = get_character_image(lvl)
-set_page_background_with_egg("mori.jpg", egg_image,egg_size="100px")
+set_page_background_with_egg("mori.jpg", egg_image,egg_size="200px")
 
 display_character(lvl)  # キャラを中央に表示
 
