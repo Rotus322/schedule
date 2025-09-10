@@ -18,31 +18,43 @@ def set_background_with_character(background_file, character_file):
         char_data = f.read()
     char_encoded = base64.b64encode(char_data).decode()
 
+    # 背景＋キャラ＋テキスト領域
     st.markdown(
         f"""
         <style>
         .background {{
-            position: relative;
+            position: fixed;
             width: 100%;
-            height: 100vh;
+            height: 100%;
             background-image: url("data:image/jpeg;base64,{bg_encoded}");
             background-size: cover;
             background-position: center;
+            z-index: -1;
         }}
         .character {{
             position: absolute;
-            top: 50%;  /* 縦中央 */
-            left: 50%; /* 横中央 */
+            top: 50%;
+            left: 50%;
             transform: translate(-50%, -50%);
-            width: 300px;  /* キャラの大きさ */
+            width: 300px;
+            z-index: 0;
+        }}
+        .overlay {{
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            color: white;
+            padding-top: 20px;
         }}
         </style>
-        <div class="background">
-            <img class="character" src="data:image/jpeg;base64,{char_encoded}">
-        </div>
+        <div class="background"></div>
+        <img class="character" src="data:image/png;base64,{char_encoded}">
+        <div class="overlay">
         """,
         unsafe_allow_html=True
     )
+
+# 背景＋キャラ表示
 set_background_with_character("mori.jpg", "tamago.png")
 
 
