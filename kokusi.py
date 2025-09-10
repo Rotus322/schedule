@@ -10,16 +10,7 @@ import base64
 
 # キャラ表示
 
-emoji_map = {1:"tamago.png",
-             2:"sa.jpg",
-             3:"youtien.png",
-             4:"syougaku.png",
-             5:"tyuugaku.png",
-             6:"koukou.png",
-             7:"daigaku.png",
-             8:"juken.png",
-             9:"kngosi.png"}
-display_image = emoji_map.get(min(lvl, max(emoji_map.keys())), "default.jpg")
+
 st.markdown(
     """
     <style>
@@ -194,7 +185,16 @@ df = load_data()
 tot_exp = total_exp(df)
 lvl = current_level(tot_exp)
 exp_in_lvl = exp_within_level(tot_exp)
-
+emoji_map = {1:"tamago.png",
+             2:"sa.jpg",
+             3:"youtien.png",
+             4:"syougaku.png",
+             5:"tyuugaku.png",
+             6:"koukou.png",
+             7:"daigaku.png",
+             8:"juken.png",
+             9:"kngosi.png"}
+display_image = emoji_map.get(min(lvl, max(emoji_map.keys())), "default.jpg")
 st.markdown("<div style='text-align: center;'>", unsafe_allow_html=True)
 st.image(display_image, width=150)
 st.markdown("</div>", unsafe_allow_html=True)
