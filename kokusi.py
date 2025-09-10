@@ -26,7 +26,7 @@ def set_background(image_file):
     )
 
 # 呼び出し（背景設定）
-set_background("hanabi.jpeg")
+set_background("mori.jpg")
 
 # ----------------------
 # 設定
