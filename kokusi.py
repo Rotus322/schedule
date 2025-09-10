@@ -27,7 +27,16 @@ def set_background(image_file):
 
 # 呼び出し（背景設定）
 set_background("mori.jpg")
-
+st.markdown(
+    """
+    <style>
+    * {
+        color: white !important;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 # ----------------------
 # 設定
 # ----------------------
