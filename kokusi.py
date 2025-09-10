@@ -8,10 +8,8 @@ import json
 page_bg = """
 <style>
 [data-testid="stAppViewContainer"] {
-    background-color: #f0f8ff; /* 水色系の背景 */
-    /* 背景画像にしたい場合は以下を有効化 */
-    /* background-image: url("https://www.example.com/your_image.jpg");
-       background-size: cover; */
+     background-image: url("hanabi.jpg");
+       background-size: cover;
 }
 </style>
 """
