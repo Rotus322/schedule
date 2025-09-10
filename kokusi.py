@@ -151,7 +151,7 @@ def exp_within_level(total_exp_val):
 # ページ設定
 # ----------------------
 st.set_page_config(page_title="国試成長記録", page_icon="📒")
-set_page_background_with_egg("mori.jpg", "tamago.png")  # 背景と卵
+set_page_background_with_egg("mori.jpg", display_image)  # 背景と卵
 
 df = load_data()
 tot_exp = total_exp(df)
