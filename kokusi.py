@@ -152,7 +152,7 @@ emoji_map = {1:"tamago.png",
              9:"kngosi.jpg"}
 display_image = emoji_map.get(min(lvl, max(emoji_map.keys())), "default.jpg")
 st.markdown("<div style='text-align: center;'>", unsafe_allow_html=True)
-st.image(display_image, width=300)
+st.image(display_image, width=150)
 st.markdown("</div>", unsafe_allow_html=True)
 st.write(f"レベル: **Lv {lvl}**")
 st.progress(exp_in_lvl / EXP_PER_LEVEL)
