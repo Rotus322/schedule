@@ -83,7 +83,7 @@ set_page_background("mori.jpg")
 display_egg("tamago.png", top=60, left=30)
 
 # サンプルキャラ
-display_character("sa.jpg")
+display_character("sa.png")
 
 # UI
 st.title("♡きゅらちゃん育成アプリ♡")
