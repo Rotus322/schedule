@@ -5,15 +5,28 @@ import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 import json
 
-page_bg = """
-<style>
-[data-testid="stAppViewContainer"] {
-     background-image: ("hanabi.jpeg");
-       background-size: cover;
-}
-</style>
-"""
-st.markdown(page_bg, unsafe_allow_html=True)
+import base64
+
+def set_background(image_file):
+    with open(image_file, "rb") as f:
+        data = f.read()
+    encoded = base64.b64encode(data).decode()
+    st.markdown(
+        f"""
+        <style>
+        .stApp {{
+            background-image: url("data:image/jpg;base64,{encoded}");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }}
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+
+# 呼び出し（背景設定）
+set_background("background.jpg")
 
 # ----------------------
 # 設定
