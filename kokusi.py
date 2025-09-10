@@ -83,7 +83,7 @@ def display_character(level, width=150):
 # ----------------------
 # 設定
 # ----------------------
-EXP_PER_PRESS = 10
+EXP_PER_PRESS = 150
 EXP_PER_LEVEL = 150
 SPREADSHEET_NAME = "study_log"
 SHEET_NAME = "log"
