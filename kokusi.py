@@ -7,21 +7,6 @@ import json
 
 import base64
 
-
-# キャラ表示
-
-
-st.markdown(
-    """
-    <style>
-    * {
-        color: white !important;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
-
 def set_background_with_character(background_file, character_file):
     # 背景
     with open(background_file, "rb") as f:
@@ -59,6 +44,20 @@ def set_background_with_character(background_file, character_file):
         unsafe_allow_html=True
     )
 set_background_with_character("mori.jpg", "tamago.png")
+
+
+
+st.markdown(
+    """
+    <style>
+    * {
+        color: white !important;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
 
 st.markdown(
     """
