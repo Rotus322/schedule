@@ -54,7 +54,7 @@ st.markdown("</div>", unsafe_allow_html=True)
 # 卵の表示（後で座標で動かせるようにdivでラップ）
 # ------------------------
 egg_image = "tamago.png"
-egg_top = 200   # 卵の上位置(px)
+egg_top = 400   # 卵の上位置(px)
 egg_left = 100  # 卵の左位置(px)
 
 st.markdown(
