@@ -155,7 +155,7 @@ exp_in_lvl = exp_within_level(tot_exp)
 
 # 背景と卵をキャラと同じ画像で設定
 egg_image = get_character_image(lvl)
-set_page_background_with_egg("mori.jpg", egg__image,size="100px")
+set_page_background_with_egg("mori.jpg", egg_image,size="100px")
 
 display_character(lvl)  # キャラを中央に表示
 
