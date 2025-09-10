@@ -15,7 +15,7 @@ def set_page_background_with_egg(background_file, egg_file):
         bg_data = f.read()
     bg_encoded = base64.b64encode(bg_data).decode()
 
-    # 卵
+    # 卵（レベルに応じて変化）
     with open(egg_file, "rb") as f:
         egg_data = f.read()
     egg_encoded = base64.b64encode(egg_data).decode()
@@ -24,12 +24,11 @@ def set_page_background_with_egg(background_file, egg_file):
         f"""
         <style>
         .stApp {{
-            background-image: 
-                url("data:image/png;base64,{egg_encoded}"), 
-                url("data:image/jpeg;base64,{bg_encoded}");
+            background-image: url("data:image/png;base64,{egg_encoded}"),
+                              url("data:image/jpeg;base64,{bg_encoded}");
             background-repeat: no-repeat, no-repeat;
-            background-position: 55% 80%, center;  /* 卵の位置と背景の位置 */
-            background-size: auto, cover;           /* 卵は自動、背景は全体に */
+            background-position: 55% 80%, center; /* 卵の位置と背景の位置 */
+            background-size: auto, cover;         /* 卵は自動、背景は全体に */
             background-attachment: fixed;
         }}
         * {{
@@ -52,7 +51,7 @@ def set_page_background_with_egg(background_file, egg_file):
 # ----------------------
 # キャラ表示（経験値に応じて切り替え）
 # ----------------------
-def display_character(level, width=150):
+def get_character_image(level):
     emoji_map = {
         1: "tamago.png",
         2: "sa.jpg",
@@ -64,7 +63,10 @@ def display_character(level, width=150):
         8: "juken.png",
         9: "kngosi.png"
     }
-    display_image = emoji_map.get(min(level, max(emoji_map.keys())), "default.jpg")
+    return emoji_map.get(min(level, max(emoji_map.keys())), "default.jpg")
+
+def display_character(level, width=150):
+    display_image = get_character_image(level)
     with open(display_image, "rb") as f:
         char_data = f.read()
     char_encoded = base64.b64encode(char_data).decode()
@@ -83,7 +85,6 @@ def display_character(level, width=150):
 # ----------------------
 EXP_PER_PRESS = 10
 EXP_PER_LEVEL = 150
-
 SPREADSHEET_NAME = "study_log"
 SHEET_NAME = "log"
 
@@ -93,8 +94,7 @@ SHEET_NAME = "log"
 def connect_gsheets():
     creds_json = st.secrets["gcp_service_account"]
     creds_dict = json.loads(creds_json)
-    scope = ["https://spreadsheets.google.com/feeds",
-             "https://www.googleapis.com/auth/drive"]
+    scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
     creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
     client = gspread.authorize(creds)
     sheet = client.open(SPREADSHEET_NAME).worksheet(SHEET_NAME)
@@ -105,20 +105,16 @@ def load_data():
         sheet = connect_gsheets()
         data = sheet.get_all_records()
         df = pd.DataFrame(data)
-        
         if "date" not in df.columns:
             df["date"] = pd.Timestamp.now()
         else:
             df["date"] = pd.to_datetime(df["date"])
-            
         if "exp" not in df.columns:
             df["exp"] = 0
         else:
             df["exp"] = pd.to_numeric(df["exp"], errors="coerce").fillna(0).astype(int)
-        
         if "note" not in df.columns:
             df["note"] = ""
-        
         return df
     except Exception as e:
         st.error(f"Googleスプレッドシート読み込み失敗: {e}")
@@ -151,14 +147,17 @@ def exp_within_level(total_exp_val):
 # ページ設定
 # ----------------------
 st.set_page_config(page_title="国試成長記録", page_icon="📒")
-set_page_background_with_egg("mori.jpg", display_image)  # 背景と卵
 
 df = load_data()
 tot_exp = total_exp(df)
 lvl = current_level(tot_exp)
 exp_in_lvl = exp_within_level(tot_exp)
 
-display_character(lvl)  # レベルに応じてキャラ表示
+# 背景と卵をキャラと同じ画像で設定
+egg_image = get_character_image(lvl)
+set_page_background_with_egg("mori.jpg", egg_image)
+
+display_character(lvl)  # キャラを中央に表示
 
 st.title("♡きゅらちゃん育成アプリ♡")
 st.write("勉強終わったらボタンを押してキャラを育てよう！")
