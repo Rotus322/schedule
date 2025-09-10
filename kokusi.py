@@ -141,7 +141,7 @@ exp_in_lvl = exp_within_level(tot_exp)
 
 # キャラ表示
 
-emoji_map = {1:"tamago.jpg",
+emoji_map = {1:"tamago.png",
              2:"sa.jpg",
              3:"youtien.jpg",
              4:"syougaku.jpg",
