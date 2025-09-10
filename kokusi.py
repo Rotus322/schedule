@@ -28,7 +28,7 @@ def set_page_background_with_egg(background_file, egg_file):
                 url("data:image/png;base64,{egg_encoded}"), 
                 url("data:image/jpeg;base64,{bg_encoded}");
             background-repeat: no-repeat, no-repeat;
-            background-position: 60% 80%, center;  /* 卵の位置と背景の位置 */
+            background-position: 55% 80%, center;  /* 卵の位置と背景の位置 */
             background-size: auto, cover;           /* 卵は自動、背景は全体に */
             background-attachment: fixed;
         }}
