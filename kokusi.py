@@ -37,7 +37,7 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
-display_image = "tamago.jpg"  # キャラ画像
+display_image = "tamago.png"  # キャラ画像
 st.markdown(
     f"""
     <div style='position: relative; margin-top: -50px;'>
