@@ -8,8 +8,6 @@ import json
 import base64
 
 
-# 呼び出し（背景設定）
-set_background("mori.jpg")
 st.markdown(
     """
     <style>
