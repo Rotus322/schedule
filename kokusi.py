@@ -7,23 +7,6 @@ import json
 
 import base64
 
-def set_background(image_file):
-    with open(image_file, "rb") as f:
-        data = f.read()
-    encoded = base64.b64encode(data).decode()
-    st.markdown(
-        f"""
-        <style>
-        .stApp {{
-            background-image: url("data:image/jpg;base64,{encoded}");
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-        }}
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
 
 # 呼び出し（背景設定）
 set_background("mori.jpg")
@@ -37,16 +20,7 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
-display_image = "tamago.png"  # キャラ画像
-st.markdown(
-    f"""
-    <div style='position: relative; margin-top: -50px;'>
-        <img src="data:image/jpeg;base64,{base64.b64encode(open(display_image,'rb').read()).decode()}" 
-             style='width:300px; display:block; margin-left:auto; margin-right:auto;'>
-    </div>
-    """,
-    unsafe_allow_html=True
-)
+
 st.markdown(
     """
     <style>
@@ -239,3 +213,41 @@ else:
         st.dataframe(df.sort_values("date", ascending=False))
     else:
         st.dataframe(df)
+
+def set_background_with_character(background_file, character_file):
+    # 背景
+    with open(background_file, "rb") as f:
+        bg_data = f.read()
+    bg_encoded = base64.b64encode(bg_data).decode()
+
+    # キャラ
+    with open(character_file, "rb") as f:
+        char_data = f.read()
+    char_encoded = base64.b64encode(char_data).decode()
+
+    st.markdown(
+        f"""
+        <style>
+        .background {{
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            background-image: url("data:image/jpeg;base64,{bg_encoded}");
+            background-size: cover;
+            background-position: center;
+        }}
+        .character {{
+            position: absolute;
+            top: 50%;  /* 縦中央 */
+            left: 50%; /* 横中央 */
+            transform: translate(-50%, -50%);
+            width: 300px;  /* キャラの大きさ */
+        }}
+        </style>
+        <div class="background">
+            <img class="character" src="data:image/jpeg;base64,{char_encoded}">
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+set_background_with_character("mori.jpeg", "display_image")
