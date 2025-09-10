@@ -29,34 +29,37 @@ def set_background_with_character(background_file, character_file):
         char_data = f.read()
     char_encoded = base64.b64encode(char_data).decode()
 
-    # 背景＋キャラ＋テキスト領域
+    # 背景 + キャラ
     st.markdown(
         f"""
         <style>
-        .background {{
-            position: fixed;
-            width: 100%;
-            height: 100%;
+        /* ページ全体の背景 */
+        .stApp {{
             background-image: url("data:image/jpeg;base64,{bg_encoded}");
             background-size: cover;
             background-position: center;
-            z-index: -1;
+            background-attachment: fixed;
         }}
+
+        /* キャラ画像を中央に表示 */
         .character {{
-            position: absolute;
+            position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             width: 300px;
-            z-index: 0;
+            z-index: 1;
         }}
+
+        /* テキストはキャラより前に */
         .overlay {{
             position: relative;
-            z-index: 1;
+            z-index: 2;
             text-align: center;
             color: white;
-            padding-top: 20px;
         }}
+
+        /* ボタンも透明化 */
         div.stButton > button {{
             background-color: rgba(255,255,255,0.2);
             color: white;
@@ -67,9 +70,8 @@ def set_background_with_character(background_file, character_file):
             background-color: rgba(255,255,255,0.4);
         }}
         </style>
-        <div class="background"></div>
+
         <img class="character" src="data:image/png;base64,{char_encoded}">
-        <div class="overlay">
         """,
         unsafe_allow_html=True
     )
