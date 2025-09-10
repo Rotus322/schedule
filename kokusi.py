@@ -9,17 +9,27 @@ import base64
 # ----------------------
 # 背景設定
 # ----------------------
-def set_page_background(background_file):
+def set_page_background_with_egg(background_file, egg_file):
+    # 背景
     with open(background_file, "rb") as f:
         bg_data = f.read()
     bg_encoded = base64.b64encode(bg_data).decode()
+
+    # 卵
+    with open(egg_file, "rb") as f:
+        egg_data = f.read()
+    egg_encoded = base64.b64encode(egg_data).decode()
+
     st.markdown(
         f"""
         <style>
         .stApp {{
-            background-image: url("data:image/jpeg;base64,{bg_encoded}");
-            background-size: cover;
-            background-position: center;
+            background-image: 
+                url("data:image/png;base64,{egg_encoded}"), 
+                url("data:image/jpeg;base64,{bg_encoded}");
+            background-repeat: no-repeat, no-repeat;
+            background-position: 30% 60%, center;  /* 卵の位置と背景の位置 */
+            background-size: auto, cover;           /* 卵は自動、背景は全体に */
             background-attachment: fixed;
         }}
         * {{
@@ -35,30 +45,6 @@ def set_page_background(background_file):
             background-color: rgba(255, 255, 255, 0.2);
         }}
         </style>
-        """,
-        unsafe_allow_html=True
-    )
-
-# ----------------------
-# 卵表示（絶対位置）
-# ----------------------
-def display_egg(egg_file, top=60, left=30, width=80):
-    with open(egg_file, "rb") as f:
-        egg_data = f.read()
-    egg_encoded = base64.b64encode(egg_data).decode()
-
-    st.markdown(
-        f"""
-        <div style="
-            position: absolute;
-            top: {top}%;
-            left: {left}%;
-            transform: translate(-50%, -50%);
-            width: {width}px;
-            z-index:1;
-        ">
-            <img src="data:image/png;base64,{egg_encoded}">
-        </div>
         """,
         unsafe_allow_html=True
     )
