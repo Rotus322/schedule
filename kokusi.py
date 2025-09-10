@@ -58,7 +58,7 @@ def set_background_with_character(background_file, character_file):
         """,
         unsafe_allow_html=True
     )
-set_background_with_character("mori.jpg", display_image)
+set_background_with_character("mori.jpg", "tamago.png")
 
 st.markdown(
     """
