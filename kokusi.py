@@ -15,7 +15,7 @@ JST=pytz.timezone("Asia/Tokyo")
 exam_date = datetime(2026, 2, 15, tzinfo=JST)
 
 # 現在時刻
-now = datetime.now(JST)
+now = datetime.now(JST).strftime("%Y-%m-%d %H:%M:%S")
 
 # 残り日数
 days_left = (exam_date - now).days
