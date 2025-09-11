@@ -176,7 +176,26 @@ set_page_background_with_egg("mori.jpg", egg_image,egg_size="200px")
 
 display_character(lvl)  # キャラを中央に表示
 
-st.title("💛⚔さーきゅらクエスト⚔💛")
+st.markdown(
+    """
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Jacquarda+Bastarda+9&display=swap');
+
+    .custom-title {
+        font-family: 'Jacquarda Bastarda 9', sans-serif;
+        font-size: 48px;
+        color: #FF69B4;
+        text-align: center;
+        margin: 20px 0;
+    }
+    </style>
+    <div class="custom-title">
+        💛⚔さーきゅらクエスト⚔💛
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+
 st.write("勉強終わったらボタンを押してキャラを育てよう！")
 
 if "last_level" not in st.session_state:
