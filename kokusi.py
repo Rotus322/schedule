@@ -9,6 +9,25 @@ import pytz
 
 JST=pytz.timezone("Asia/Tokyo") 
 
+
+# 国試の日程
+exam_date = datetime(2026, 2, 15, tzinfo=JST)
+
+# 現在時刻
+now = datetime.now(JST)
+
+# 残り日数
+days_left = (exam_date - now).days
+
+# --- ここを育成アプリのUIに追加 ---
+st.markdown(
+    f"""
+    <div style="text-align: center; font-size: 56px; font-weight: bold; color: #E74C3C; margin: 25px 0;">
+        🏥 国試まであと {days_left} 日
+    </div>
+    """,
+    unsafe_allow_html=True
+)
 # ----------------------
 # 背景設定
 # ----------------------
