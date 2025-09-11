@@ -109,16 +109,19 @@ def load_data():
         data = sheet.get_all_records()
         df = pd.DataFrame(data)
         if "date" not in df.columns:
-            df["date"] = pd.Timestamp.now(tz="Asia/Tokyo")
+            df["date"] = pd.Timestamp.now(tz=JST)
         else:
-             df["date"] = pd.to_datetime(df["date"]).dt.tz_localize("UTC").dt.tz_convert("Asia/Tokyo")
+            df["date"] = (
+                pd.to_datetime(df["date"], errors="coerce")
+                .dt.tz_localize("UTC")
+                .dt.tz_convert(JST)
+            )
         if "exp" not in df.columns:
             df["exp"] = 0
         else:
             df["exp"] = pd.to_numeric(df["exp"], errors="coerce").fillna(0).astype(int)
         if "note" not in df.columns:
             df["note"] = ""
-          
         return df
     except Exception as e:
         st.error(f"Googleスプレッドシート読み込み失敗: {e}")
