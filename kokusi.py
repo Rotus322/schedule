@@ -5,6 +5,9 @@ import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 import json
 import base64
+import pytz
+
+JST=pytz.timezone("Asia/Tokyo") 
 
 # ----------------------
 # 背景設定
@@ -106,9 +109,9 @@ def load_data():
         data = sheet.get_all_records()
         df = pd.DataFrame(data)
         if "date" not in df.columns:
-            df["date"] = pd.Timestamp.now()
+            df["date"] = pd.Timestamp.now(tz="Asia/Tokyo")
         else:
-            df["date"] = pd.to_datetime(df["date"])
+             df["date"] = pd.to_datetime(df["date"]).dt.tz_localize("UTC").dt.tz_convert("Asia/Tokyo")
         if "exp" not in df.columns:
             df["exp"] = 0
         else:
@@ -123,7 +126,7 @@ def load_data():
 def append_entry(exp, note=""):
     try:
         sheet = connect_gsheets()
-        now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        now = datetime.datetime.now(JST).strftime("%Y-%m-%d %H:%M:%S")
         sheet.append_row([now, exp, note])
         df = load_data()
         return df
