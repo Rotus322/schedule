@@ -205,10 +205,10 @@ days_left = (exam_date - now).days
 st.markdown(
     f"""
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Shippori Mincho&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=WDXL Lubrifont JP N&display=swap');
 
     .countdown {{
-        font-family: 'Shippori Mincho', sans-serif;
+        font-family: 'WDXL Lubrifont JP N', sans-serif;
         color: #FF69B4 !important;  /* ピンク */
         font-size: 56px;
         font-weight: bold;
