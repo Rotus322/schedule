@@ -20,24 +20,7 @@ now = datetime.now(JJSSTT)
 # 残り日数
 days_left = (exam_date - now).days
 
-# --- ここを育成アプリのUIに追加 ---
-st.markdown(
-    f"""
-    <style>
-    .countdown {{
-        color: #FF69B4 !important;  /* ホットピンク */
-        font-size: 56px;
-        font-weight: bold;
-        text-align: center;
-        margin: 25px 0;
-    }}
-    </style>
-    <div class="countdown">
-        🏥 国試まであと {days_left} 日
-    </div>
-    """,
-    unsafe_allow_html=True
-)
+
 # ----------------------
 # 背景設定
 # ----------------------
@@ -198,7 +181,24 @@ st.write("勉強終わったらボタンを押してキャラを育てよう！"
 
 if "last_level" not in st.session_state:
     st.session_state["last_level"] = lvl
-
+# --- ここを育成アプリのUIに追加 ---
+st.markdown(
+    f"""
+    <style>
+    .countdown {{
+        color: #FF69B4 !important;  /* ホットピンク */
+        font-size: 56px;
+        font-weight: bold;
+        text-align: center;
+        margin: 25px 0;
+    }}
+    </style>
+    <div class="countdown">
+        🏥 国試まであと {days_left} 📓
+    </div>
+    """,
+    unsafe_allow_html=True
+)
 # ----------------------
 # ボタン処理
 # ----------------------
