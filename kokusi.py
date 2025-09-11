@@ -118,7 +118,7 @@ def load_data():
             df["exp"] = pd.to_numeric(df["exp"], errors="coerce").fillna(0).astype(int)
         if "note" not in df.columns:
             df["note"] = ""
-        df["date"] = df["date"].dt.strftime("%Y-%m-%d %H:%M:%S")    
+          
         return df
     except Exception as e:
         st.error(f"Googleスプレッドシート読み込み失敗: {e}")
