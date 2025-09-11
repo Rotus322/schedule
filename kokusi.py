@@ -6,7 +6,7 @@ from oauth2client.service_account import ServiceAccountCredentials
 import json
 import base64
 import pytz
-from datetime import datetime, timezone, timedelta
+
 
 JST=pytz.timezone("Asia/Tokyo") 
 JJSSTT = timezone(timedelta(hours=9))
