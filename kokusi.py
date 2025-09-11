@@ -164,7 +164,7 @@ set_page_background_with_egg("mori.jpg", egg_image,egg_size="200px")
 
 display_character(lvl)  # キャラを中央に表示
 
-st.title("♡きゅらちゃん育成アプリ♡")
+st.title("💛⚔さーきゅらクエスト⚔💛")
 st.write("勉強終わったらボタンを押してキャラを育てよう！")
 
 if "last_level" not in st.session_state:
