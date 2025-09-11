@@ -195,7 +195,7 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-st.write("勉強終わったらボタンを押してキャラを育てよう！")
+st.write("終わったらボタンを押してキャラを育てよう！")
 
 if "last_level" not in st.session_state:
     st.session_state["last_level"] = lvl
