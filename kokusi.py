@@ -227,7 +227,7 @@ st.markdown(
 # ----------------------
 
 if st.button("✅ 今日の勉強終わった！"):
-    df = append_entry(15, "勉強終わった")
+    df = append_entry(10, "勉強終わった")
     tot_exp = total_exp(df)
     new_lvl = current_level(tot_exp)
     st.success(f"経験値 +15！累計 {tot_exp} EXP")
