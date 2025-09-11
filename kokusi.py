@@ -9,13 +9,13 @@ import pytz
 
 
 JST=pytz.timezone("Asia/Tokyo") 
-JJSSTT = timezone(timedelta(hours=9))
+
 
 # 国試の日程
-exam_date = datetime(2026, 2, 15, tzinfo=JJSSTT)
+exam_date = datetime(2026, 2, 15, tzinfo=JST)
 
 # 現在時刻
-now = datetime.now(JJSSTT)
+now = datetime.now(JST)
 
 # 残り日数
 days_left = (exam_date - now).days
