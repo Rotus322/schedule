@@ -182,11 +182,16 @@ st.write("勉強終わったらボタンを押してキャラを育てよう！"
 if "last_level" not in st.session_state:
     st.session_state["last_level"] = lvl
 # --- ここを育成アプリのUIに追加 ---
+days_left = (exam_date - now).days
+
 st.markdown(
     f"""
     <style>
+    @import url('https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&display=swap');
+
     .countdown {{
-        color: #FF69B4 !important;  /* ホットピンク */
+        font-family: 'Mochiy Pop One', sans-serif;
+        color: #FF69B4 !important;  /* ピンク */
         font-size: 56px;
         font-weight: bold;
         text-align: center;
@@ -194,7 +199,7 @@ st.markdown(
     }}
     </style>
     <div class="countdown">
-        🏥 国試まであと {days_left}日 📓
+        🏥 国試まであと {days_left} 日
     </div>
     """,
     unsafe_allow_html=True
