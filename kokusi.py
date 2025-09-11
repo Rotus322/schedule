@@ -23,7 +23,7 @@ days_left = (exam_date - now).days
 # --- ここを育成アプリのUIに追加 ---
 st.markdown(
     f"""
-    <div style="text-align: center; font-size: 56px; font-weight: bold; color: #E74C3C; margin: 25px 0;">
+    <div style="text-align: center; font-size: 56px; font-weight: bold; color: #FF69B4; margin: 25px 0;">
         🏥 国試まであと {days_left} 日
     </div>
     """,
