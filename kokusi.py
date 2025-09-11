@@ -210,7 +210,7 @@ st.markdown(
     .countdown {{
         font-family: 'WDXL Lubrifont JP N', sans-serif;
         color: #FF69B4 !important;  /* ピンク */
-        font-size: 56px;
+        font-size: 40px;
         font-weight: bold;
         text-align: center;
         margin: 25px 0;
