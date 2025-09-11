@@ -200,6 +200,17 @@ if st.button("🔬 ゼミ頑張った！"):
     st.session_state["last_level"] = new_lvl
     display_character(new_lvl)
 
+if st.button("🏥🍴 バイト頑張った！"):
+    df = append_entry(5, "バイト頑張った")
+    tot_exp = total_exp(df)
+    new_lvl = current_level(tot_exp)
+    st.success(f"経験値 +5！累計 {tot_exp} EXP")
+    if new_lvl > st.session_state["last_level"]:
+        st.balloons()
+        st.success(f"🎉 レベルアップ！ Lv{st.session_state['last_level']} → Lv{new_lvl}")
+    st.session_state["last_level"] = new_lvl
+    display_character(new_lvl)
+
 # ----------------------
 # 経験値表示
 # ----------------------
