@@ -6,15 +6,16 @@ from oauth2client.service_account import ServiceAccountCredentials
 import json
 import base64
 import pytz
+from datetime import datetime, timezone, timedelta
 
 JST=pytz.timezone("Asia/Tokyo") 
-
+JJSSTT = timezone(timedelta(hours=9))
 
 # 国試の日程
-exam_date = datetime(2026, 2, 15, tzinfo=JST)
+exam_date = datetime(2026, 2, 15, tzinfo=JJSSTT
 
 # 現在時刻
-now = datetime.now(JST)
+now = datetime.now(JJSSTT)
 
 # 残り日数
 days_left = (exam_date - now).days
