@@ -12,7 +12,7 @@ JST=pytz.timezone("Asia/Tokyo")
 
 
 # 国試の日程
-exam_date = datetime(2026, 2, 15, tzinfo=JST)
+exam_date = JST.localize(datetime(2026, 2, 15, 0, 0))
 
 # 現在時刻
 now = datetime.now(JST)
