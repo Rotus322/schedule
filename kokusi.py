@@ -109,13 +109,10 @@ def load_data():
         data = sheet.get_all_records()
         df = pd.DataFrame(data)
         if "date" not in df.columns:
-            df["date"] = pd.Timestamp.now(tz=JST)
+            df["date"] = pd.Timestamp.now(tz="Asia/Tokyo")
         else:
-            df["date"] = (
-                pd.to_datetime(df["date"], errors="coerce")
-                .dt.tz_localize("UTC")
-                .dt.tz_convert(JST)
-            )
+            # UTC扱いせず、そのまま時刻にする
+            df["date"] = pd.to_datetime(df["date"], errors="coerce")
         if "exp" not in df.columns:
             df["exp"] = 0
         else:
