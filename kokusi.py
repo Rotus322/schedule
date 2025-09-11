@@ -12,7 +12,7 @@ JST=pytz.timezone("Asia/Tokyo")
 JJSSTT = timezone(timedelta(hours=9))
 
 # 国試の日程
-exam_date = datetime(2026, 2, 15, tzinfo=JJSSTT
+exam_date = datetime(2026, 2, 15, tzinfo=JJSSTT)
 
 # 現在時刻
 now = datetime.now(JJSSTT)
