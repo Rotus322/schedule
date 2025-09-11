@@ -184,7 +184,6 @@ st.markdown(
     .custom-title {
         font-family: 'Chokokutai', sans-serif;
         font-size: 48px;
-        color: #FF69B4;
         text-align: center;
         margin: 20px 0;
     }
@@ -206,10 +205,10 @@ days_left = (exam_date - now).days
 st.markdown(
     f"""
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Dela Gothic One&display=swap');
 
     .countdown {{
-        font-family: 'Mochiy Pop One', sans-serif;
+        font-family: 'Dela Gothic One', sans-serif;
         color: #FF69B4 !important;  /* ピンク */
         font-size: 56px;
         font-weight: bold;
