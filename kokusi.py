@@ -179,10 +179,10 @@ display_character(lvl)  # キャラを中央に表示
 st.markdown(
     """
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Jacquarda+Bastarda+9&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Chokokutai&display=swap');
 
     .custom-title {
-        font-family: 'Jacquarda Bastarda 9', sans-serif;
+        font-family: 'Chokokutai', sans-serif;
         font-size: 48px;
         color: #FF69B4;
         text-align: center;
