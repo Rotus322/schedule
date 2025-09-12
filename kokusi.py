@@ -287,7 +287,22 @@ else:
         st.dataframe(df)
 
 
-
+# ボス画像を表示
+def display_boss_image(image_file, width=200):
+    try:
+        with open(image_file, "rb") as f:
+            img_data = f.read()
+        img_encoded = base64.b64encode(img_data).decode()
+        st.markdown(
+            f"""
+            <div style='text-align:center; margin-top:20px;'>
+                <img src="data:image/png;base64,{img_encoded}" width="{width}">
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+    except Exception as e:
+        st.error(f"ボス画像の読み込みに失敗: {e}")
         
 # === Google Sheets 接続 ===
 def connect_gsheets():
@@ -335,6 +350,9 @@ def append_mock_result(mock_name, score, boss_hp, damage):
 
 # === アプリ本体 ===
 st.title("⚔️ 模試ボス戦 ⚔️")
+
+# ボス画像を表示
+display_boss_image("boss.png", width=200)
 
 # ボスの初期HP
 BOSS_MAX_HP = 1000
