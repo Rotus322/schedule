@@ -369,6 +369,23 @@ st.write(f"**{current_hp} / {BOSS_MAX_HP}**")
 st.markdown("---")
 st.subheader("📊 模試結果入力")
 
+st.markdown(
+    """
+    <style>
+    /* 入力ボックス全体 */
+    .stTextInput input, .stNumberInput input {
+        color: black !important;        /* 文字色 */
+        background-color: white !important; /* 背景（必要なら） */
+    }
+    /* ラベル（項目名） */
+    .stTextInput label, .stNumberInput label {
+        color: black !important;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
 mock_name = st.text_input("模試名（例：9月模試）")
 score = st.number_input("模試点数", min_value=0, max_value=300, step=1)
 
