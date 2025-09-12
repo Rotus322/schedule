@@ -346,17 +346,17 @@ score = st.number_input("模試点数", min_value=0, max_value=1000, step=1)
 
 if st.button("ダメージを与える！"):
     if mock_name and score > 0:
-        # 点数→ダメージ換算（例：スコア ÷ 5）
-        damage = int(score * 2)
-        # 新しいボス残HP
-        new_hp = max(current_hp - damage, 0)
-            append_mock_result(mock_name, score, new_hp, damage)
+        try:
+            damage = int(score / 5)
+            new_hp = max(current_hp - damage, 0)
+            append_mock_result(mock_name, score, new_hp, damage)  # インデントを揃える
             st.success(f"{mock_name} の結果を記録しました！ 💥 {damage}ダメージ")
             st.experimental_rerun()
         except Exception as e:
             st.error(f"データ更新に失敗しました: {e}")
     else:
         st.warning("模試名とスコアを入力してください")
+
 st.markdown("---")
 st.subheader("📝 履歴一覧")
 if not df.empty:
