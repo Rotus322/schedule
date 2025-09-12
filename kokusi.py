@@ -286,6 +286,12 @@ else:
     else:
         st.dataframe(df)
 
+
+damage = int(damage)
+new_hp = int(new_hp)
+score = int(score)
+append_mock_result(mock_name, score, new_hp, damage)
+
         
 # === Google Sheets 接続 ===
 def connect_gsheets():
