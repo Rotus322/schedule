@@ -285,3 +285,20 @@ else:
         st.dataframe(df.sort_values("date", ascending=False))
     else:
         st.dataframe(df)
+
+        
+st.subheader("💥 ボス戦（模試） 💥")
+
+score = st.number_input("模試の得点を入力 (0〜100)", min_value=0, max_value=100)
+
+if st.button("⚔ 攻撃！"):
+    damage = score * 2   # ダメージ計算
+    boss_hp = load_boss_hp()  # スプレッドシートから現在HP取得
+    boss_hp = max(0, boss_hp - damage)
+    save_boss_hp(boss_hp)     # 更新
+    st.success(f"ボスに {damage} ダメージ！ 残りHP: {boss_hp}")
+    if boss_hp == 0:
+        st.balloons()
+        st.success("🎉 ボス撃破！報酬GET！")
+        # 報酬としてEXP追加など
+
