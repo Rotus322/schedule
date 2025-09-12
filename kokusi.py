@@ -287,10 +287,6 @@ else:
         st.dataframe(df)
 
 
-damage = int(damage)
-new_hp = int(new_hp)
-score = int(score)
-append_mock_result(mock_name, score, new_hp, damage)
 
         
 # === Google Sheets 接続 ===
@@ -298,19 +294,24 @@ def connect_gsheets():
     try:
         creds_json = st.secrets["gcp_service_account"]
         creds_dict = json.loads(creds_json)
-        scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
+        scope = [
+            "https://spreadsheets.google.com/feeds",
+            "https://www.googleapis.com/auth/drive"
+        ]
         creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
         client = gspread.authorize(creds)
-        sheet = client.open("study_log").worksheet("boss_log")
+        sheet = client.open("study_log").sheet2  # 任意のシート名に変更可
         return sheet
     except Exception as e:
-        st.error(f"Google Sheets 接続失敗: {e}")
+        st.error(f"シート接続失敗: {e}")
         return None
 
 # === データ読み込み ===
-def load_data():
+def load_mock_data():
+    sheet = connect_gsheets()
+    if sheet is None:
+        return pd.DataFrame(columns=["date", "mock_name", "score", "damage", "boss_hp"])
     try:
-        sheet = connect_gsheets()
         data = sheet.get_all_records()
         df = pd.DataFrame(data)
         if df.empty:
@@ -318,26 +319,29 @@ def load_data():
         return df
     except Exception as e:
         st.error(f"シート読み込み失敗: {e}")
-        return pd.DataFrame(columns=["date","mock_name","score","damage","boss_hp"])
+        return pd.DataFrame(columns=["date", "mock_name", "score", "damage", "boss_hp"])
 
 # === データ追加 ===
 def append_mock_result(mock_name, score, boss_hp, damage):
+    sheet = connect_gsheets()
+    if sheet is None:
+        return
     try:
-        sheet = connect_gsheets()
-        now = datetime.datetime.now(pytz.timezone("Asia/Tokyo")).strftime("%Y-%m-%d")
-        sheet.append_row([now, mock_name, score, damage, boss_hp])
+        now = datetime.datetime.now(JST).strftime("%Y-%m-%d")
+        # int64 → int にキャスト
+        sheet.append_row([now, mock_name, int(score), int(damage), int(boss_hp)])
     except Exception as e:
         st.error(f"シート書き込み失敗: {e}")
 
 # === アプリ本体 ===
 st.title("⚔️ 模試ボス戦 ⚔️")
 
-# ボスの初期HP（任意）
+# ボスの初期HP
 BOSS_MAX_HP = 1000
 
 # 現在までの履歴を読み込み
-df = load_data()
-total_damage = df["damage"].sum() if not df.empty else 0
+df = load_mock_data()
+total_damage = int(df["damage"].sum()) if not df.empty else 0
 current_hp = max(BOSS_MAX_HP - total_damage, 0)
 
 st.subheader("💥 現在のボスHP")
@@ -352,14 +356,17 @@ score = st.number_input("模試点数", min_value=0, max_value=300, step=1)
 
 if st.button("ダメージを与える！"):
     if mock_name and score > 0:
-        try:
-            damage = int(score * 2)
-            new_hp = max(current_hp - damage, 0)
-            append_mock_result(mock_name, score, new_hp, damage)  # インデントを揃える
-            st.success(f"{mock_name} の結果を記録しました！ 💥 {damage}ダメージ")
-            st.experimental_rerun()
-        except Exception as e:
-            st.error(f"データ更新に失敗しました: {e}")
+        # 点数→ダメージ換算（例：スコア ÷ 5）
+        damage = int(score * 2)
+        new_hp = max(current_hp - damage, 0)
+        append_mock_result(mock_name, score, new_hp, damage)
+        st.success(f"{mock_name} の結果を記録しました！ 💥 {damage}ダメージ")
+        # 履歴とHPを再読み込み
+        df = load_mock_data()
+        total_damage = int(df["damage"].sum()) if not df.empty else 0
+        current_hp = max(BOSS_MAX_HP - total_damage, 0)
+        st.progress(current_hp / BOSS_MAX_HP)
+        st.write(f"**{current_hp} / {BOSS_MAX_HP}**")
     else:
         st.warning("模試名とスコアを入力してください")
 
