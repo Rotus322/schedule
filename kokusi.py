@@ -287,18 +287,75 @@ else:
         st.dataframe(df)
 
         
-st.subheader("💥 ボス戦（模試） 💥")
+# ----------------------
+# 💥 ボス戦（模試） 💥
+# ----------------------
+st.markdown(
+    """
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Chokokutai&display=swap');
 
-score = st.number_input("模試の得点を入力 (必修＋一般＋状況設定(最大300))", min_value=0, max_value=100)
+    .boss-title {
+        font-family: 'Chokokutai', cursive;
+        font-size: 40px;
+        text-align: center;
+        color: #FF4444;
+        margin: 40px 0 20px 0;
+        text-shadow: 2px 2px #000;
+    }
+    .boss-sub {
+        text-align: center;
+        font-size: 20px;
+        color: white;
+    }
+    </style>
+    <div class="boss-title">💥 ボス戦（模試） 💥</div>
+    <div class="boss-sub">模試の点数を入力して攻撃しよう！</div>
+    """,
+    unsafe_allow_html=True
+)
+
+# --- 仮のボス設定 ---
+boss_name = "🔥 第1回模試のドラゴン 🔥"
+boss_max_hp = 500
+
+# セッションステートで現在HPを管理（ページ更新しても持続）
+if "boss_hp" not in st.session_state:
+    st.session_state["boss_hp"] = boss_max_hp
+
+# ボス画像（任意のPNG）
+boss_image = "tamago.png"  # プロジェクト内に用意してください
+try:
+    st.image(boss_image, use_column_width=True)
+except:
+    st.write("※ boss.png を同じフォルダに入れると画像が表示されます")
+
+# 残りHP表示
+st.progress(st.session_state["boss_hp"] / boss_max_hp)
+st.markdown(
+    f"<div style='text-align:center; font-size:24px; color:white;'>"
+    f"{boss_name}<br>HP: {st.session_state['boss_hp']} / {boss_max_hp}"
+    f"</div>",
+    unsafe_allow_html=True
+)
+
+# 攻撃入力
+score = st.number_input("模試の得点を入力 (0〜100)", min_value=0, max_value=100, step=1)
 
 if st.button("⚔ 攻撃！"):
-    damage = score * 2   # ダメージ計算
-    boss_hp = load_boss_hp()  # スプレッドシートから現在HP取得
-    boss_hp = max(0, boss_hp - damage)
-    save_boss_hp(boss_hp)     # 更新
-    st.success(f"ボスに {damage} ダメージ！ 残りHP: {boss_hp}")
-    if boss_hp == 0:
+    damage = score * 2  # 例：得点×2のダメージ
+    st.session_state["boss_hp"] = max(0, st.session_state["boss_hp"] - damage)
+
+    st.success(f"ボスに {damage} ダメージ！ 残りHP {st.session_state['boss_hp']}")
+
+    if st.session_state["boss_hp"] <= 0:
         st.balloons()
-        st.success("🎉 ボス撃破！報酬GET！")
-        # 報酬としてEXP追加など
+        st.success("🎉 ボスを倒した！報酬として経験値 +100 GET!")
+        # 実際の報酬反映
+        df = append_entry(100, "ボス撃破報酬")
+        tot_exp = total_exp(df)
+        new_lvl = current_level(tot_exp)
+        if new_lvl > st.session_state["last_level"]:
+            st.success(f"🎉 レベルアップ！ Lv{st.session_state['last_level']} → Lv{new_lvl}")
+            st.session_state["last_level"] = new_lvl
 
