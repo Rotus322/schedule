@@ -293,24 +293,25 @@ else:
 st.markdown(
     """
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Chokokutai&display=swap');
-
     .boss-title {
-        font-family: 'Chokokutai', cursive;
         font-size: 40px;
         text-align: center;
         color: #FF4444;
-        margin: 40px 0 20px 0;
+        margin: 40px 0 10px 0;
         text-shadow: 2px 2px #000;
     }
     .boss-sub {
         text-align: center;
-        font-size: 20px;
+        font-size: 18px;
         color: white;
+        margin-bottom: 10px;
+    }
+    .boss-info {
+        text-align:center; color: white; font-size: 20px; margin-bottom: 8px;
     }
     </style>
     <div class="boss-title">💥 ボス戦（模試） 💥</div>
-    <div class="boss-sub">模試の点数を入力して攻撃しよう！</div>
+    <div class="boss-sub">模試の点数を入力してボスにダメージを与えよう！</div>
     """,
     unsafe_allow_html=True
 )
@@ -319,23 +320,25 @@ st.markdown(
 boss_name = "🔥 第1回模試のドラゴン 🔥"
 boss_max_hp = 500
 
-# セッションステートで現在HPを管理（ページ更新しても持続）
+# セッションステートで現在HPを管理（初回のみ初期化）
 if "boss_hp" not in st.session_state:
     st.session_state["boss_hp"] = boss_max_hp
 
-# ボス画像（任意のPNG）
-boss_image = "tamago.png"  # プロジェクト内に用意してください
-try:
-    st.image(boss_image, use_column_width=True)
-except:
-    st.write("※ boss.png を同じフォルダに入れると画像が表示されます")
+# ボス画像（プロジェクト内に用意してください）
+boss_image = "tamago.png"  # 存在しなければ下の代替テキストを表示
 
-# 残りHP表示
-st.progress(st.session_state["boss_hp"] / boss_max_hp)
+# 画像表示（非推奨引数を取り除き、use_container_widthに変更）
+try:
+    st.image(boss_image, use_container_width=True)  # ← ここを修正しました
+except Exception:
+    st.markdown("<div style='text-align:center; color:#ddd;'>（boss.png が見つかりません — 画像を配置すると表示されます）</div>", unsafe_allow_html=True)
+
+# 残りHP表示（0〜1 にクランプしてから progress に渡す）
+hp_ratio = max(0.0, min(1.0, st.session_state["boss_hp"] / boss_max_hp))
+st.progress(hp_ratio)
+
 st.markdown(
-    f"<div style='text-align:center; font-size:24px; color:white;'>"
-    f"{boss_name}<br>HP: {st.session_state['boss_hp']} / {boss_max_hp}"
-    f"</div>",
+    f"<div class='boss-info'>{boss_name}<br>HP: {st.session_state['boss_hp']} / {boss_max_hp}</div>",
     unsafe_allow_html=True
 )
 
@@ -344,18 +347,21 @@ score = st.number_input("模試の得点を入力 (0〜100)", min_value=0, max_v
 
 if st.button("⚔ 攻撃！"):
     damage = score * 2  # 例：得点×2のダメージ
+    old_hp = st.session_state["boss_hp"]
     st.session_state["boss_hp"] = max(0, st.session_state["boss_hp"] - damage)
 
     st.success(f"ボスに {damage} ダメージ！ 残りHP {st.session_state['boss_hp']}")
 
-    if st.session_state["boss_hp"] <= 0:
+    if st.session_state["boss_hp"] <= 0 and old_hp > 0:
         st.balloons()
         st.success("🎉 ボスを倒した！報酬として経験値 +100 GET!")
-        # 実際の報酬反映
-        df = append_entry(100, "ボス撃破報酬")
-        tot_exp = total_exp(df)
-        new_lvl = current_level(tot_exp)
-        if new_lvl > st.session_state["last_level"]:
-            st.success(f"🎉 レベルアップ！ Lv{st.session_state['last_level']} → Lv{new_lvl}")
-            st.session_state["last_level"] = new_lvl
-
+        # 実際の報酬反映（スプレッドシートへ追加）
+        try:
+            df = append_entry(100, "ボス撃破報酬")
+            tot_exp = total_exp(df)
+            new_lvl = current_level(tot_exp)
+            if new_lvl > st.session_state["last_level"]:
+                st.success(f"🎉 レベルアップ！ Lv{st.session_state['last_level']} → Lv{new_lvl}")
+                st.session_state["last_level"] = new_lvl
+        except Exception as e:
+            st.error(f"報酬処理でエラー: {e}")
