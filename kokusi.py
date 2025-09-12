@@ -355,14 +355,14 @@ st.markdown(
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Yuji Mai&display=swap');
 
-    .custom-title {
+    .boss-title {
         font-family: 'Yuji Mai', sans-serif;
         font-size: 48px;
         text-align: center;
         margin: 20px 0;
     }
     </style>
-    <div class="custom-title">
+    <div class="boss-title">
         ⚔️ 模試ボス戦 ⚔️
     </div>
     """,
