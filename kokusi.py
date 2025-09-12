@@ -289,7 +289,7 @@ else:
         
 st.subheader("💥 ボス戦（模試） 💥")
 
-score = st.number_input("模試の得点を入力 (0〜100)", min_value=0, max_value=100)
+score = st.number_input("模試の得点を入力 (必修＋一般＋状況設定(最大300))", min_value=0, max_value=100)
 
 if st.button("⚔ 攻撃！"):
     damage = score * 2   # ダメージ計算
