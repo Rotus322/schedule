@@ -343,10 +343,10 @@ st.markdown(
 )
 
 # 攻撃入力
-score = st.number_input("模試の得点を入力 (0〜100)", min_value=0, max_value=100, step=1)
+score = st.number_input("模試の得点を入力 (最大300)", min_value=0, max_value=300, step=1)
 
 if st.button("⚔ 攻撃！"):
-    damage = score * 2  # 例：得点×2のダメージ
+    damage = score 
     old_hp = st.session_state["boss_hp"]
     st.session_state["boss_hp"] = max(0, st.session_state["boss_hp"] - damage)
 
