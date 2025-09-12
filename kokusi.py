@@ -289,16 +289,17 @@ else:
         
 # === Google Sheets 接続 ===
 def connect_gsheets():
-    scope = [
-        "https://spreadsheets.google.com/feeds",
-        "https://www.googleapis.com/auth/drive"
-    ]
-    creds = ServiceAccountCredentials.from_json_keyfile_name(
-        "service_account.json", scope
-    )
-    client = gspread.authorize(creds)
-    sheet = client.open("模試ボス履歴").sheet1
-    return sheet
+    try:
+        creds_json = st.secrets["gcp_service_account"]
+        creds_dict = json.loads(creds_json)
+        scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
+        creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
+        client = gspread.authorize(creds)
+        sheet = client.open("boss_log").sheet2
+        return sheet
+    except Exception as e:
+        st.error(f"Google Sheets 接続失敗: {e}")
+        return None
 
 # === データ読み込み ===
 def load_data():
