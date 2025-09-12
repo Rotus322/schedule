@@ -181,7 +181,7 @@ st.markdown(
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Chokokutai&display=swap');
 
-    .custum-title {
+    .custom-title {
         font-family: 'Chokokutai', sans-serif;
         font-size: 48px;
         text-align: center;
