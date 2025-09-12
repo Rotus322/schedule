@@ -295,7 +295,7 @@ def connect_gsheets():
         scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
         creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
         client = gspread.authorize(creds)
-        sheet = client.open("log").worksheet("boss_log")
+        sheet = client.open("study_log").worksheet("boss_log")
         return sheet
     except Exception as e:
         st.error(f"Google Sheets 接続失敗: {e}")
