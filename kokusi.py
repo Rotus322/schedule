@@ -342,12 +342,12 @@ st.markdown("---")
 st.subheader("📊 模試結果入力")
 
 mock_name = st.text_input("模試名（例：9月模試）")
-score = st.number_input("模試点数", min_value=0, max_value=1000, step=1)
+score = st.number_input("模試点数", min_value=0, max_value=300, step=1)
 
 if st.button("ダメージを与える！"):
     if mock_name and score > 0:
         try:
-            damage = int(score / 5)
+            damage = int(score * 2)
             new_hp = max(current_hp - damage, 0)
             append_mock_result(mock_name, score, new_hp, damage)  # インデントを揃える
             st.success(f"{mock_name} の結果を記録しました！ 💥 {damage}ダメージ")
