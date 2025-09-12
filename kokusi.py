@@ -287,81 +287,78 @@ else:
         st.dataframe(df)
 
         
-# ----------------------
-# 💥 ボス戦（模試） 💥
-# ----------------------
-st.markdown(
-    """
-    <style>
-    .boss-title {
-        font-size: 40px;
-        text-align: center;
-        color: #FF4444;
-        margin: 40px 0 10px 0;
-        text-shadow: 2px 2px #000;
-    }
-    .boss-sub {
-        text-align: center;
-        font-size: 18px;
-        color: white;
-        margin-bottom: 10px;
-    }
-    .boss-info {
-        text-align:center; color: white; font-size: 20px; margin-bottom: 8px;
-    }
-    </style>
-    <div class="boss-title">💥 ボス戦（模試） 💥</div>
-    <div class="boss-sub">模試の点数を入力してボスにダメージを与えよう！</div>
-    """,
-    unsafe_allow_html=True
-)
+# === Google Sheets 接続 ===
+def connect_gsheets():
+    scope = [
+        "https://spreadsheets.google.com/feeds",
+        "https://www.googleapis.com/auth/drive"
+    ]
+    creds = ServiceAccountCredentials.from_json_keyfile_name(
+        "service_account.json", scope
+    )
+    client = gspread.authorize(creds)
+    sheet = client.open("模試ボス履歴").sheet1
+    return sheet
 
-# --- 仮のボス設定 ---
-boss_name = "🔥 第1回模試のドラゴン 🔥"
-boss_max_hp = 500
+# === データ読み込み ===
+def load_data():
+    try:
+        sheet = connect_gsheets()
+        data = sheet.get_all_records()
+        df = pd.DataFrame(data)
+        if df.empty:
+            df = pd.DataFrame(columns=["date", "mock_name", "score", "damage", "boss_hp"])
+        return df
+    except Exception as e:
+        st.error(f"シート読み込み失敗: {e}")
+        return pd.DataFrame(columns=["date","mock_name","score","damage","boss_hp"])
 
-# セッションステートで現在HPを管理（初回のみ初期化）
-if "boss_hp" not in st.session_state:
-    st.session_state["boss_hp"] = boss_max_hp
+# === データ追加 ===
+def append_mock_result(mock_name, score, boss_hp, damage):
+    try:
+        sheet = connect_gsheets()
+        now = datetime.datetime.now(pytz.timezone("Asia/Tokyo")).strftime("%Y-%m-%d")
+        sheet.append_row([now, mock_name, score, damage, boss_hp])
+    except Exception as e:
+        st.error(f"シート書き込み失敗: {e}")
 
-# ボス画像（プロジェクト内に用意してください）
-boss_image = "tamago.png"  # 存在しなければ下の代替テキストを表示
+# === アプリ本体 ===
+st.title("⚔️ 模試ボス戦 ⚔️")
 
-# 画像表示（非推奨引数を取り除き、use_container_widthに変更）
-try:
-    st.image(boss_image, use_container_width=True)  # ← ここを修正しました
-except Exception:
-    st.markdown("<div style='text-align:center; color:#ddd;'>（boss.png が見つかりません — 画像を配置すると表示されます）</div>", unsafe_allow_html=True)
+# ボスの初期HP（任意）
+BOSS_MAX_HP = 1000
 
-# 残りHP表示（0〜1 にクランプしてから progress に渡す）
-hp_ratio = max(0.0, min(1.0, st.session_state["boss_hp"] / boss_max_hp))
-st.progress(hp_ratio)
+# 現在までの履歴を読み込み
+df = load_data()
+total_damage = df["damage"].sum() if not df.empty else 0
+current_hp = max(BOSS_MAX_HP - total_damage, 0)
 
-st.markdown(
-    f"<div class='boss-info'>{boss_name}<br>HP: {st.session_state['boss_hp']} / {boss_max_hp}</div>",
-    unsafe_allow_html=True
-)
+st.subheader("💥 現在のボスHP")
+st.progress(current_hp / BOSS_MAX_HP)
+st.write(f"**{current_hp} / {BOSS_MAX_HP}**")
 
-# 攻撃入力
-score = st.number_input("模試の得点を入力 (最大300)", min_value=0, max_value=300, step=1)
+st.markdown("---")
+st.subheader("📊 模試結果入力")
 
-if st.button("⚔ 攻撃！"):
-    damage = score 
-    old_hp = st.session_state["boss_hp"]
-    st.session_state["boss_hp"] = max(0, st.session_state["boss_hp"] - damage)
+mock_name = st.text_input("模試名（例：9月模試）")
+score = st.number_input("模試点数", min_value=0, max_value=1000, step=1)
 
-    st.success(f"ボスに {damage} ダメージ！ 残りHP {st.session_state['boss_hp']}")
+if st.button("ダメージを与える！"):
+    if mock_name and score > 0:
+        # 点数→ダメージ換算（例：スコア ÷ 5）
+        damage = int(score / 5)
+        # 新しいボス残HP
+        new_hp = max(current_hp - damage, 0)
 
-    if st.session_state["boss_hp"] <= 0 and old_hp > 0:
-        st.balloons()
-        st.success("🎉 ボスを倒した！報酬として経験値 +100 GET!")
-        # 実際の報酬反映（スプレッドシートへ追加）
-        try:
-            df = append_entry(100, "ボス撃破報酬")
-            tot_exp = total_exp(df)
-            new_lvl = current_level(tot_exp)
-            if new_lvl > st.session_state["last_level"]:
-                st.success(f"🎉 レベルアップ！ Lv{st.session_state['last_level']} → Lv{new_lvl}")
-                st.session_state["last_level"] = new_lvl
-        except Exception as e:
-            st.error(f"報酬処理でエラー: {e}")
+        append_mock_result(mock_name, score, new_hp, damage)
+        st.success(f"{mock_name} の結果を記録しました！ 💥 {damage}ダメージ")
+        st.experimental_rerun()
+    else:
+        st.warning("模試名とスコアを入力してください")
+
+st.markdown("---")
+st.subheader("📝 履歴一覧")
+if not df.empty:
+    st.dataframe(df.sort_values("date", ascending=False), use_container_width=True)
+else:
+    st.write("まだ模試履歴がありません")
