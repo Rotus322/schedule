@@ -300,7 +300,7 @@ def connect_gsheets():
         ]
         creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
         client = gspread.authorize(creds)
-        sheet = client.open("study_log").sheet2  # 任意のシート名に変更可
+        sheet = client.open("study_log").boss_log  # 任意のシート名に変更可
         return sheet
     except Exception as e:
         st.error(f"シート接続失敗: {e}")
