@@ -352,7 +352,7 @@ def append_mock_result(mock_name, score, boss_hp, damage):
 st.title("⚔️ 模試ボス戦 ⚔️")
 
 # ボス画像を表示
-display_boss_image("boss.png", width=200)
+display_boss_image("tamago.png", width=200)
 
 # ボスの初期HP
 BOSS_MAX_HP = 1000
