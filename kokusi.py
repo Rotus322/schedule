@@ -181,7 +181,7 @@ st.markdown(
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Chokokutai&display=swap');
 
-    .custom-title {
+    .quest-title {
         font-family: 'Chokokutai', sans-serif;
         font-size: 48px;
         text-align: center;
@@ -355,7 +355,7 @@ st.markdown(
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Yuji Mai&display=swap');
 
-    .custom-title {
+    .boss-title {
         font-family: 'Yuji Mai', sans-serif;
         font-size: 48px;
         text-align: center;
