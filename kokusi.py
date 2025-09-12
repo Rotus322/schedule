@@ -349,7 +349,25 @@ def append_mock_result(mock_name, score, boss_hp, damage):
         st.error(f"シート書き込み失敗: {e}")
 
 # === アプリ本体 ===
-st.title("⚔️ 模試ボス戦 ⚔️")
+
+st.markdown(
+    """
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Yuji Mai&display=swap');
+
+    .custom-title {
+        font-family: 'Yuji Mai', sans-serif;
+        font-size: 48px;
+        text-align: center;
+        margin: 20px 0;
+    }
+    </style>
+    <div class="custom-title">
+        ⚔️ 模試ボス戦 ⚔️
+    </div>
+    """,
+    unsafe_allow_html=True
+)
 
 # ボス画像を表示
 display_boss_image("tamago.png", width=200)
