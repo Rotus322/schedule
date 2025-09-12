@@ -107,13 +107,18 @@ SHEET_NAME = "log"
 # Google Sheets 接続
 # ----------------------
 def connect_gsheets():
-    creds_json = st.secrets["gcp_service_account"]
-    creds_dict = json.loads(creds_json)
-    scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-    creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
-    client = gspread.authorize(creds)
-    sheet = client.open(SPREADSHEET_NAME).worksheet(SHEET_NAME)
-    return sheet
+    try:
+        creds_json = st.secrets["gcp_service_account"]
+        creds_dict = json.loads(creds_json)
+        scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
+        creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
+        client = gspread.authorize(creds)
+        sheet = client.open("模試ボス履歴").sheet1
+        return sheet
+    except Exception as e:
+        st.error(f"Google Sheets 接続失敗: {e}")
+        return None
+
 
 def load_data():
     try:
