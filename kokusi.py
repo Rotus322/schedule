@@ -356,7 +356,7 @@ st.markdown(
     @import url('https://fonts.googleapis.com/css2?family=Yuji+Mai&display=swap');
     .boss-title {
         font-family: 'Yuji Mai', sans-serif;
-        font-size: 35px;
+        font-size: 40px;
         text-align: center;
         margin: 20px 0;
     }
