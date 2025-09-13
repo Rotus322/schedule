@@ -61,7 +61,54 @@ def set_page_background_with_egg(background_file, egg_file,egg_size):
         </style>
         """,
         unsafe_allow_html=True
+    )def set_page_background_with_friends(background_file, egg_file, egg_size, friends_files):
+    """背景に森、卵、仲間キャラを重ねて表示"""
+    layers = []
+    positions = []
+    sizes = []
+
+    # 1. 森
+    with open(background_file, "rb") as f:
+        bg_encoded = base64.b64encode(f.read()).decode()
+    layers.append(f"url('data:image/jpeg;base64,{bg_encoded}')")
+    positions.append("center")
+    sizes.append("cover")
+
+    # 2. 卵
+    with open(egg_file, "rb") as f:
+        egg_encoded = base64.b64encode(f.read()).decode()
+    layers.insert(0, f"url('data:image/png;base64,{egg_encoded}')")
+    positions.insert(0, "55% 80%")
+    sizes.insert(0, egg_size)
+
+    # 3. 仲間キャラ
+    for i, friend_file in enumerate(friends_files):
+        with open(friend_file, "rb") as f:
+            fr_encoded = base64.b64encode(f.read()).decode()
+        layers.insert(0, f"url('data:image/png;base64,{fr_encoded}')")
+        # 位置は仲間ごとにずらす（例: 左右に散らす）
+        positions.insert(0, f"{20 + i*20}% 70%")
+        sizes.insert(0, "120px")
+
+    # CSS反映
+    st.markdown(
+        f"""
+        <style>
+        .stApp {{
+            background-image: {', '.join(layers)};
+            background-repeat: no-repeat;
+            background-position: {', '.join(positions)};
+            background-size: {', '.join(sizes)};
+            background-attachment: fixed;
+        }}
+        * {{
+            color: white !important;
+        }}
+        </style>
+        """,
+        unsafe_allow_html=True
     )
+
 
 # ----------------------
 # キャラ表示（経験値に応じて切り替え）
@@ -172,8 +219,11 @@ exp_in_lvl = exp_within_level(tot_exp)
 
 # 背景と卵をキャラと同じ画像で設定
 egg_image = get_character_image(lvl)
-set_page_background_with_egg("mori.jpg", egg_image,egg_size="200px")
+# 仲間キャラのリストを取得
+friends_to_show = FRIEND_IMAGES[:cleared_bosses]
 
+# 背景を設定（森 + 卵 + 仲間）
+set_page_background_with_friends("mori.jpg", egg_image, "200px", friends_to_show)
 display_character(lvl)  # キャラを中央に表示
 
 st.markdown(
