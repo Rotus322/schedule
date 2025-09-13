@@ -192,12 +192,7 @@ BOSS_LIST = [
 
 # 背景と卵をキャラと同じ画像で設定
 egg_image = get_character_image(lvl)
-# 仲間キャラのリストを取得
-friends_to_show = FRIEND_IMAGES[:cleared_bosses]
 
-# 背景を設定（森 + 卵 + 仲間）
-set_page_background_with_friends("mori.jpg", egg_image, "200px", friends_to_show)
-display_character(lvl)  # キャラを中央に表示
 
 st.markdown(
     """
@@ -472,6 +467,13 @@ def calculate_cleared_bosses(df, boss_list):
         else:
             break
     return cleared
+
+# 仲間キャラのリストを取得
+friends_to_show = FRIEND_IMAGES[:cleared_bosses]
+
+# 背景を設定（森 + 卵 + 仲間）
+set_page_background_with_friends("mori.jpg", egg_image, "200px", friends_to_show)
+display_character(lvl)  # キャラを中央に表示
 # === 履歴表示 ===
 st.markdown("---")
 st.subheader("📝 履歴一覧")
