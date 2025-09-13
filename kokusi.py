@@ -291,7 +291,7 @@ else:
 BOSS_LIST = [
     {"name": "黒狼🐺", "hp": 500, "image": "kokurou.png"},
     {"name": "ドラゴン🐉", "hp": 1500, "image": "doragon.png"},
-    {"name": "にわとりボス", "hp": 2000, "image": "tamago.png"},
+    {"name": "にわとりボス", "hp": 2000, "image": "niwatori.png"},
 ]
 
 # 仲間画像（倒したボスの順番に対応）
@@ -468,39 +468,34 @@ if not df.empty:
 else:
     st.write("まだ模試履歴がありません")
 
-# 仲間画像の座標とサイズをあらかじめ定義
-FRIEND_POSITIONS = [
-    {"file": "kurosiba.png", "pos": "100% 65%", "size": "10px"},  # 1匹目
-    {"file": "dora.png",     "pos": "15% 40%", "size": "10px"},  # 2匹目
-    {"file": "friend3.png",  "pos": "45% 20%", "size": "200px"},  # 3匹目
-]
 def add_friend_backgrounds(cleared_bosses):
+    """倒したボスの仲間画像を背景に追加する"""
     if cleared_bosses <= 0:
         return
 
-    layers, positions, sizes = [], [], []
+    friend_layers = []
+    friend_positions = []
+    friend_sizes = []
 
+    # 仲間ごとの画像を読み込み
     for i in range(cleared_bosses):
-        info = FRIEND_POSITIONS[i]       # 指定済み座標を取得
-        with open(info["file"], "rb") as f:
+        with open(FRIEND_IMAGES[i], "rb") as f:
             img_b64 = base64.b64encode(f.read()).decode()
-        layers.append(f"url('data:image/png;base64,{img_b64}')")
-        positions.append(info["pos"])
-        sizes.append(info["size"])
+        friend_layers.append(f"url('data:image/png;base64,{img_b64}')")
 
-    # 既存の背景レイヤーを後ろに追加
-    layers.append(st.session_state.get("current_bg_image", ""))
-    positions.append(st.session_state.get("current_bg_position", "center"))
-    sizes.append(st.session_state.get("current_bg_size", "cover"))
+        # 位置やサイズを仲間ごとに調整（例：左右に分散）
+        friend_positions.append(f"{10 + i*20}% 80%")
+        friend_sizes.append("150px")
 
     st.markdown(
         f"""
         <style>
         .stApp {{
-            background-image: {", ".join(layers)};
-            background-position: {", ".join(positions)};
+            /* 既存の背景設定を保持したまま仲間を追加 */
+            background-image: {", ".join(friend_layers)}, {st.session_state.get("current_bg_image","")};
+            background-position: {", ".join(friend_positions)}, {st.session_state.get("current_bg_position","center")};
             background-repeat: no-repeat, {st.session_state.get("current_bg_repeat","no-repeat")};
-            background-size: {", ".join(sizes)};
+            background-size: {", ".join(friend_sizes)}, {st.session_state.get("current_bg_size","cover")};
             background-attachment: fixed;
         }}
         </style>
@@ -508,18 +503,22 @@ def add_friend_backgrounds(cleared_bosses):
         unsafe_allow_html=True
     )
 
-# 🔑 既存背景情報をセッションに保存 
+    # 既存の背景と卵を設定
+egg_image = get_character_image(lvl)
+set_page_background_with_egg("mori.jpg", egg_image, egg_size="200px")
+# 🔑 既存背景情報をセッションに保存
 with open("mori.jpg", "rb") as f:
     bg_encoded = base64.b64encode(f.read()).decode()
 with open(egg_image, "rb") as f:
     egg_encoded = base64.b64encode(f.read()).decode()
+
 st.session_state["current_bg_image"] = (
     f"url('data:image/png;base64,{egg_encoded}'), "
-    f"url('data:image/jpeg;base64,{bg_encoded}')" 
-) 
-st.session_state["current_bg_position"] = "55% 80%,
-center" 
-st.session_state["current_bg_repeat"] = "no-repeat, no-repeat" 
-st.session_state["current_bg_size"] = "10px, cover"
+    f"url('data:image/jpeg;base64,{bg_encoded}')"
+)
+st.session_state["current_bg_position"] = "55% 80%, center"
+st.session_state["current_bg_repeat"] = "no-repeat, no-repeat"
+st.session_state["current_bg_size"] = "200px, cover"
+
 # その上に仲間キャラを追加
 add_friend_backgrounds(cleared_bosses)
