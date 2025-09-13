@@ -182,9 +182,9 @@ exp_in_lvl = exp_within_level(tot_exp)
 
 # 仲間画像（倒したボスの順番に対応）
 FRIEND_IMAGES = [
-    "kurosiba.png",  
-    "dora.png",  # ひよこ撃破後
-    "friend3.png",  # にわとり撃破後
+    "kurosiba.png",
+    "dora.png",
+    "friend3.png",
 ]
 
 # 背景と卵をキャラと同じ画像で設定
