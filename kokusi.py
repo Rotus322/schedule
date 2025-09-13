@@ -217,7 +217,7 @@ st.markdown(
     }}
     </style>
     <div class="countdown">
-        📜国試まであと {days_left} 日
+        📜 国試まであと {days_left} 日
     </div>
     """,
     unsafe_allow_html=True
