@@ -26,7 +26,10 @@ days_left = (exam_date - now).days
 # ----------------------
 # 背景設定
 # ----------------------
-def set_page_background_with_friend(background_file, egg_file, egg_size, friend_files):
+# ----------------------
+# 背景設定（倒した仲間だけ反映）
+# ----------------------
+def set_page_background_with_friend(background_file, egg_file, egg_size, friend_files, num_friends=0):
     # 背景
     with open(background_file, "rb") as f:
         bg_encoded = base64.b64encode(f.read()).decode()
@@ -35,13 +38,13 @@ def set_page_background_with_friend(background_file, egg_file, egg_size, friend_
     with open(egg_file, "rb") as f:
         egg_encoded = base64.b64encode(f.read()).decode()
 
-    # 仲間（リストで複数可）
+    # 倒した仲間だけ追加
     friend_images = []
-    for fpath in friend_files:
+    for fpath in friend_files[:num_friends]:
         with open(fpath, "rb") as f:
             friend_images.append(f"url('data:image/png;base64,{base64.b64encode(f.read()).decode()}')")
 
-    # CSS用に連結（卵→仲間→背景 の順で重ねる）
+    # CSS用に連結（卵→仲間→背景 の順）
     layers = ", ".join([f"url('data:image/png;base64,{egg_encoded}')"] + friend_images + [f"url('data:image/jpeg;base64,{bg_encoded}')"])
 
     st.markdown(
@@ -55,19 +58,11 @@ def set_page_background_with_friend(background_file, egg_file, egg_size, friend_
             background-attachment: fixed;
         }}
         * {{ color: white !important; }}
-        div.stButton > button {{
-            background-color: transparent;
-            color: white;
-            border: 2px solid white;
-            border-radius: 10px;
-        }}
-        div.stButton > button:hover {{
-            background-color: rgba(255, 255, 255, 0.2);
-        }}
         </style>
         """,
         unsafe_allow_html=True
     )
+
 # ----------------------
 # キャラ表示（経験値に応じて切り替え）
 # ----------------------
@@ -453,6 +448,36 @@ if st.button("ダメージを与える！"):
         st.warning("模試名とスコアを入力してください")
 
 cleared_bosses = min(boss_index, len(FRIEND_IMAGES))
+
+# ----------------------
+# 倒したボス数を計算
+# ----------------------
+total_damage = int(df["damage"].sum()) if not df.empty else 0
+
+remaining = total_damage
+boss_index = 0
+for i, boss in enumerate(BOSS_LIST):
+    if remaining < boss["hp"]:
+        boss_index = i
+        break
+    remaining -= boss["hp"]
+else:
+    boss_index = len(BOSS_LIST) - 1
+    remaining = BOSS_LIST[-1]["hp"]
+
+current_boss = BOSS_LIST[boss_index]
+current_hp = max(current_boss["hp"] - remaining, 0)
+cleared_bosses = min(boss_index, len(FRIEND_IMAGES))  # 倒した数
+
+
+egg_image = get_character_image(lvl)
+set_page_background_with_friend(
+    background_file="mori.jpg",
+    egg_file=egg_image,
+    egg_size="200px",
+    friend_files=FRIEND_IMAGES,
+    num_friends=cleared_bosses
+)
 
 # === 履歴表示 ===
 st.markdown("---")
