@@ -9,8 +9,7 @@ import pytz
 
 
 JST=pytz.timezone("Asia/Tokyo") 
-FRIEND_IMAGES=["kurokoma.jpg",
-               "dora.jpg"]
+
 
 # 国試の日程
 exam_date = JST.localize(datetime.datetime(2026, 2, 15, 0, 0))
@@ -25,51 +24,44 @@ days_left = (exam_date - now).days
 # ----------------------
 # 背景設定
 # ----------------------
-def set_page_background_with_character_and_friends(background_file, char_file, char_size, friend_files, num_friends):
-    """
-    背景画像 + キャラ画像 + 仲間画像を Streamlit 背景として表示する
-    """
-    # 背景画像
+def set_page_background_with_egg(background_file, egg_file,egg_size):
+    # 背景
     with open(background_file, "rb") as f:
         bg_data = f.read()
     bg_encoded = base64.b64encode(bg_data).decode()
 
-    # キャラ画像（卵）
-    with open(char_file, "rb") as f:
-        char_data = f.read()
-    char_encoded = base64.b64encode(char_data).decode()
+    # 卵（レベルに応じて変化）
+    with open(egg_file, "rb") as f:
+        egg_data = f.read()
+    egg_encoded = base64.b64encode(egg_data).decode()
 
-    # 仲間画像
-    friend_html = ""
-    for i in range(min(num_friends, len(friend_files))):
-        with open(friend_files[i], "rb") as f:
-            f_data = f.read()
-        f_encoded = base64.b64encode(f_data).decode()
-        friend_html += f'<img src="data:image/png;base64,{f_encoded}" style="width:120px; margin:5px;">'
-
-    # CSS で背景とキャラと仲間を設定
-    st.markdown(f"""
-    <style>
-    .stApp {{
-        background-image: url("data:image/png;base64,{char_encoded}"),
-                          url("data:image/jpeg;base64,{bg_encoded}");
-        background-repeat: no-repeat, no-repeat;
-        background-position: 55% 80%, center;  /* キャラの位置, 背景の位置 */
-        background-size: {char_size}, cover;   /* キャラサイズ, 背景カバー */
-        background-attachment: fixed;
-    }}
-    .friend-container {{
-        position: fixed;
-        bottom: 10px;
-        left: 50%;
-        transform: translateX(-50%);
-        z-index: 1;
-        text-align: center;
-    }}
-    </style>
-    <div class="friend-container">{friend_html}</div>
-    """, unsafe_allow_html=True)
-
+    st.markdown(
+        f"""
+        <style>
+        .stApp {{
+            background-image: url("data:image/png;base64,{egg_encoded}"),
+                              url("data:image/jpeg;base64,{bg_encoded}");
+            background-repeat: no-repeat, no-repeat;
+            background-position: 55% 80%, center; /* 卵の位置と背景の位置 */
+            background-size: {egg_size}, cover;         /* 卵は自動、背景は全体に */
+            background-attachment: fixed;
+        }}
+        * {{
+            color: white !important;
+        }}
+        div.stButton > button {{
+            background-color: transparent;
+            color: white;
+            border: 2px solid white;
+            border-radius: 10px;
+        }}
+        div.stButton > button:hover {{
+            background-color: rgba(255, 255, 255, 0.2);
+        }}
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
 
 # ----------------------
 # キャラ表示（経験値に応じて切り替え）
@@ -178,8 +170,11 @@ tot_exp = total_exp(df)
 lvl = current_level(tot_exp)
 exp_in_lvl = exp_within_level(tot_exp)
 
+# 背景と卵をキャラと同じ画像で設定
+egg_image = get_character_image(lvl)
+set_page_background_with_egg("mori.jpg", egg_image,egg_size="200px")
 
-
+display_character(lvl)  # キャラを中央に表示
 
 st.markdown(
     """
@@ -230,12 +225,13 @@ st.markdown(
 # ----------------------
 # ボタン処理
 # ----------------------
+note = st.text_input("メモ（任意）", value="", key="note_input")
 
 if st.button("✅ 今日の勉強終わった！"):
-    df = append_entry(10, "勉強終わった")
+    df = append_entry(EXP_PER_PRESS, note)
     tot_exp = total_exp(df)
     new_lvl = current_level(tot_exp)
-    st.success(f"経験値 +15！累計 {tot_exp} EXP")
+    st.success(f"経験値 +{EXP_PER_PRESS}！累計 {tot_exp} EXP")
     if new_lvl > st.session_state["last_level"]:
         st.balloons()
         st.success(f"🎉 レベルアップ！ Lv{st.session_state['last_level']} → Lv{new_lvl}")
@@ -290,209 +286,3 @@ else:
         st.dataframe(df.sort_values("date", ascending=False))
     else:
         st.dataframe(df)
-
-
-# === ボス設定 ===
-BOSS_LIST = [
-    {"name": "黒狼🐺", "hp": 1000, "image": "kokurou.png"},
-    {"name": "ドラゴン🐉", "hp": 1500, "image": "doragon.png"},
-    {"name": "にわとりボス", "hp": 2000, "image": "niwatori.png"},
-]
-
-# 仲間画像（倒したボスの順番に対応）
-FRIEND_IMAGES = [
-    "kurosiba.png",  
-    "dora.png",  # ひよこ撃破後
-    "friend3.png",  # にわとり撃破後
-]
-
-# === Google Sheets 接続 ===
-def connect_gsheets():
-    try:
-        creds_json = st.secrets["gcp_service_account"]
-        creds_dict = json.loads(creds_json)
-        scope = [
-            "https://spreadsheets.google.com/feeds",
-            "https://www.googleapis.com/auth/drive"
-        ]
-        creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
-        client = gspread.authorize(creds)
-        sheet = client.open("study_log").worksheet("boss_log")
-        return sheet
-    except Exception as e:
-        st.error(f"シート接続失敗: {e}")
-        return None
-
-# === 履歴を読み込み ===
-def load_mock_data():
-    sheet = connect_gsheets()
-    if sheet is None:
-        return pd.DataFrame(columns=["date","mock_name","score","damage","total_damage"])
-    try:
-        data = sheet.get_all_records()
-        df = pd.DataFrame(data)
-        if df.empty:
-            df = pd.DataFrame(columns=["date","mock_name","score","damage","total_damage"])
-        return df
-    except Exception as e:
-        st.error(f"シート読み込み失敗: {e}")
-        return pd.DataFrame(columns=["date","mock_name","score","damage","total_damage"])
-
-# === データ追加 ===
-def append_mock_result(mock_name, score, damage, total_damage):
-    sheet = connect_gsheets()
-    if sheet is None:
-        return
-    try:
-        now = datetime.datetime.now(JST).strftime("%Y-%m-%d")
-        sheet.append_row([now, mock_name, int(score), int(damage), int(total_damage)])
-    except Exception as e:
-        st.error(f"シート書き込み失敗: {e}")
-
-# === 画像をbase64変換 ===
-def encode_image(image_file):
-    with open(image_file, "rb") as f:
-        return base64.b64encode(f.read()).decode()
-
-# === UIタイトル ===
-st.markdown(
-    """
-    <style>
-    @import url('https://fonts.googleapis.com/css2?family=Yuji+Mai&display=swap');
-    .boss-title {
-        font-family: 'Yuji Mai', sans-serif;
-        font-size: 48px;
-        text-align: center;
-        margin: 20px 0;
-    }
-    .stTextInput input, .stNumberInput input {
-        color: black !important;
-        background-color: white !important;
-    }
-    .stTextInput label, .stNumberInput label {
-        color: black !important;
-    }
-    </style>
-    <div class="boss-title">
-        ⚔️ 模試ボス戦 ⚔️
-    </div>
-    """,
-    unsafe_allow_html=True
-)
-
-# === 現在ステータス計算 ===
-df = load_mock_data()
-total_damage = int(df["damage"].sum()) if not df.empty else 0
-
-# ボス進行状況
-remaining = total_damage
-boss_index = 0
-for i, boss in enumerate(BOSS_LIST):
-    if remaining < boss["hp"]:
-        boss_index = i
-        break
-    remaining -= boss["hp"]
-else:
-    boss_index = len(BOSS_LIST) - 1
-    remaining = BOSS_LIST[-1]["hp"]
-
-current_boss = BOSS_LIST[boss_index]
-current_hp = max(current_boss["hp"] - remaining, 0)
-cleared_bosses = min(boss_index, len(FRIEND_IMAGES))  # 倒した数
-
-# === 仲間画像を背景に表示 ===
-friend_bg_html = ""
-for i in range(cleared_bosses):
-    img_b64 = encode_image(FRIEND_IMAGES[i])
-    friend_bg_html += f"""
-        <img src="data:image/png;base64,{img_b64}" 
-             style="width:150px; margin:10px; border-radius:20px;">
-    """
-if friend_bg_html:
-    st.markdown(
-        f"""
-        <div style='text-align:center; background:rgba(255,255,255,0.3);
-                    padding:20px; border-radius:15px; margin-bottom:20px;'>
-            <h3>🎉 仲間たち 🎉</h3>
-            {friend_bg_html}
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-
-# === 現在のボス ===
-st.subheader(f"💥 現在のボス: {current_boss['name']}")
-boss_img_b64 = encode_image(current_boss["image"])
-st.markdown(
-    f"""
-    <div style='text-align:center; margin-top:10px;'>
-        <img src="data:image/png;base64,{boss_img_b64}" width="500">
-    </div>
-    """,
-    unsafe_allow_html=True
-)
-st.progress(current_hp / current_boss["hp"])
-st.write(f"HP: **{current_hp} / {current_boss['hp']}**")
-st.write(f"累計ダメージ: {total_damage}")
-
-# === ボス撃破メッセージ ===
-# ボスHPが0で、かつ今回の累計ダメージで初めて突破した場合
-if current_hp == 0 and cleared_bosses > len(df[df["damage"]>0]["damage"])//9999:  # 簡易判定
-    if cleared_bosses <= len(FRIEND_IMAGES):
-        st.success(f"🎊 {BOSS_LIST[cleared_bosses-1]['name']} を倒した！仲間が増えたよ！")
-
-# === 倒したボス数を正確に計算する関数 ===
-def calculate_cleared_bosses(df, BOSS_LIST):
-    total_damage = int(df["damage"].sum()) if not df.empty else 0
-    remaining = total_damage
-    cleared = 0
-    for boss in BOSS_LIST:
-        if remaining >= boss["hp"]:
-            cleared += 1
-            remaining -= boss["hp"]
-        else:
-            break
-    return cleared
-
-
-
-# === 模試入力 ===
-st.markdown("---")
-st.subheader("📊 模試結果入力")
-
-mock_name = st.text_input("模試名（例：9月模試）")
-score = st.number_input("模試点数", min_value=0, max_value=300, step=1)
-
-if st.button("ダメージを与える！"):
-    if mock_name and score > 0:
-        damage = int(score * 2)
-        new_total = total_damage + damage
-        append_mock_result(mock_name, score, damage, new_total)
-        st.success(f"{mock_name} に {damage} ダメージを与えた！🔥")
-        st.experimental_rerun()
-    else:
-        st.warning("模試名とスコアを入力してください")
-
-# === 履歴表示 ===
-st.markdown("---")
-st.subheader("📝 履歴一覧")
-if not df.empty:
-    st.dataframe(df.sort_values("date", ascending=False), use_container_width=True)
-else:
-    st.write("まだ模試履歴がありません")
-
-# 倒したボス数を計算
-cleared_bosses = calculate_cleared_bosses(df, BOSS_LIST)
-
-# 現在のキャラ画像
-char_image = get_character_image(lvl)
-
-# 背景・キャラ・仲間を一括設定
-set_page_background_with_character_and_friends(
-    background_file="mori.jpg",
-    char_file=char_image,
-    char_size="200px",
-    friend_files=FRIEND_IMAGES,
-    num_friends=cleared_bosses
-)
-display_character(lvl)  # キャラを中央に表示
