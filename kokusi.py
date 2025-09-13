@@ -291,14 +291,14 @@ else:
 BOSS_LIST = [
     {"name": "黒狼🐺", "hp": 500, "image": "kokurou.png"},
     {"name": "ドラゴン🐉", "hp": 1500, "image": "doragon.png"},
-    {"name": "にわとりボス", "hp": 2000, "image": "niwatori.png"},
+    {"name": "にわとりボス", "hp": 2000, "image": "tamago.png"},
 ]
 
 # 仲間画像（倒したボスの順番に対応）
 FRIEND_IMAGES = [
     "kurosiba.png",  
     "dora.png",  # ひよこ撃破後
-    "friend3.png",  # にわとり撃破後
+    "tamago.png",  # にわとり撃破後
 ]
 
 # === Google Sheets 接続 ===
@@ -471,7 +471,7 @@ else:
 FRIEND_POSITIONS = [
     {"file": "kurosiba.png", "pos": "10% 70%", "size": "150px"},  # 1匹目
     {"file": "dora.png",     "pos": "80% 70%", "size": "180px"},  # 2匹目
-    {"file": "friend3.png",  "pos": "45% 20%", "size": "200px"},  # 3匹目
+    {"file": "tamago.png",  "pos": "45% 20%", "size": "200px"},  # 3匹目
 ]
 def add_friend_backgrounds(cleared_bosses):
     if cleared_bosses <= 0:
