@@ -24,8 +24,7 @@ days_left = (exam_date - now).days
 # ----------------------
 # 背景設定
 # ----------------------
-# --- 仲間追加対応版 set_page_background_with_egg ---
-def set_page_background_with_friends(background_file, egg_file, egg_size, friend_files):
+def set_page_background_with_egg(background_file, egg_file,egg_size):
     # 背景
     with open(background_file, "rb") as f:
         bg_data = f.read()
@@ -36,32 +35,15 @@ def set_page_background_with_friends(background_file, egg_file, egg_size, friend
         egg_data = f.read()
     egg_encoded = base64.b64encode(egg_data).decode()
 
-    # 仲間画像（倒したボスごとに追加）
-    friend_layers = ""
-    # 配置座標をずらす例（左→右に並ぶ）
-    base_left = 10
-    for idx, fpath in enumerate(friend_files):
-        with open(fpath, "rb") as f:
-            friend_data = f.read()
-        friend_encoded = base64.b64encode(friend_data).decode()
-        left_pos = base_left + idx * 18  # 横位置を少しずつずらす
-        friend_layers += f"""
-            url("data:image/png;base64,{friend_encoded}"),
-        """
-    # 最後に卵と背景を追加
-    friend_layers += f"""
-        url("data:image/png;base64,{egg_encoded}"),
-        url("data:image/jpeg;base64,{bg_encoded}")
-    """
-
     st.markdown(
         f"""
         <style>
         .stApp {{
-            background-image: {friend_layers};
-            background-repeat: no-repeat;
-            background-position: {" ,".join([f"{10 + i*18}% 70%" for i in range(len(friend_files))])}, 55% 80%, center;
-            background-size: {" ,".join(["120px" for _ in range(len(friend_files))])}, {egg_size}, cover;
+            background-image: url("data:image/png;base64,{egg_encoded}"),
+                              url("data:image/jpeg;base64,{bg_encoded}");
+            background-repeat: no-repeat, no-repeat;
+            background-position: 55% 80%, center; /* 卵の位置と背景の位置 */
+            background-size: {egg_size}, cover;         /* 卵は自動、背景は全体に */
             background-attachment: fixed;
         }}
         * {{
@@ -80,15 +62,6 @@ def set_page_background_with_friends(background_file, egg_file, egg_size, friend
         """,
         unsafe_allow_html=True
     )
-
-# --- ここを差し替える ---
-egg_image = get_character_image(lvl)
-
-# 倒したボス数に応じて仲間画像を追加
-friend_files = FRIEND_IMAGES[:cleared_bosses] if 'cleared_bosses' in locals() else []
-
-# 森の背景＋卵＋仲間たちを重ねる
-set_page_background_with_friends("mori.jpg", egg_image, egg_size="200px", friend_files=friend_files)
 
 # ----------------------
 # キャラ表示（経験値に応じて切り替え）
