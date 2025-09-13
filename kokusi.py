@@ -520,7 +520,7 @@ st.session_state["current_bg_image"] = (
 )
 st.session_state["current_bg_position"] = "55% 80%, center"
 st.session_state["current_bg_repeat"] = "no-repeat, no-repeat"
-st.session_state["current_bg_size"] = "100px, cover"
+st.session_state["current_bg_size"] = "10px, cover"
 
 # その上に仲間キャラを追加
 add_friend_backgrounds(cleared_bosses)
