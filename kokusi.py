@@ -287,11 +287,18 @@ else:
         st.dataframe(df)
 
 
-# === 複数ボス設定 ===
+# === ボス設定 ===
 BOSS_LIST = [
     {"name": "黒狼🐺", "hp": 1000, "image": "kokurou.png"},
     {"name": "ドラゴン🐉", "hp": 1500, "image": "doragon.png"},
-    {"name": "にわとりボス", "hp": 2000, "image": "doragon.png"},
+    {"name": "にわとりボス", "hp": 2000, "image": "niwatori.png"},
+]
+
+# 仲間画像（倒したボスの順番に対応）
+FRIEND_IMAGES = [
+    "kurosiba.png",  
+    "dora.png",  # ひよこ撃破後
+    "friend3.png",  # にわとり撃破後
 ]
 
 # === Google Sheets 接続 ===
@@ -337,29 +344,16 @@ def append_mock_result(mock_name, score, damage, total_damage):
     except Exception as e:
         st.error(f"シート書き込み失敗: {e}")
 
-# === ボス画像表示 ===
-def display_boss_image(image_file, width=500):
-    try:
-        with open(image_file, "rb") as f:
-            img_data = f.read()
-        img_encoded = base64.b64encode(img_data).decode()
-        st.markdown(
-            f"""
-            <div style='text-align:center; margin-top:20px;'>
-                <img src="data:image/png;base64,{img_encoded}" width="{width}">
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
-    except Exception as e:
-        st.error(f"ボス画像の読み込みに失敗: {e}")
+# === 画像をbase64変換 ===
+def encode_image(image_file):
+    with open(image_file, "rb") as f:
+        return base64.b64encode(f.read()).decode()
 
 # === UIタイトル ===
 st.markdown(
     """
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Yuji+Mai&display=swap');
-
     .boss-title {
         font-family: 'Yuji Mai', sans-serif;
         font-size: 48px;
@@ -385,7 +379,7 @@ st.markdown(
 df = load_mock_data()
 total_damage = int(df["damage"].sum()) if not df.empty else 0
 
-# ボスの進行状況を計算
+# ボス進行状況
 remaining = total_damage
 boss_index = 0
 for i, boss in enumerate(BOSS_LIST):
@@ -395,16 +389,52 @@ for i, boss in enumerate(BOSS_LIST):
     remaining -= boss["hp"]
 else:
     boss_index = len(BOSS_LIST) - 1
-    remaining = BOSS_LIST[-1]["hp"]  # 最終ボスHPを0で固定
+    remaining = BOSS_LIST[-1]["hp"]
 
 current_boss = BOSS_LIST[boss_index]
 current_hp = max(current_boss["hp"] - remaining, 0)
+cleared_bosses = min(boss_index, len(FRIEND_IMAGES))  # 倒した数
 
+# === 仲間画像を背景に表示 ===
+friend_bg_html = ""
+for i in range(cleared_bosses):
+    img_b64 = encode_image(FRIEND_IMAGES[i])
+    friend_bg_html += f"""
+        <img src="data:image/png;base64,{img_b64}" 
+             style="width:150px; margin:10px; border-radius:20px;">
+    """
+if friend_bg_html:
+    st.markdown(
+        f"""
+        <div style='text-align:center; background:rgba(255,255,255,0.3);
+                    padding:20px; border-radius:15px; margin-bottom:20px;'>
+            <h3>🎉 仲間たち 🎉</h3>
+            {friend_bg_html}
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+# === 現在のボス ===
 st.subheader(f"💥 現在のボス: {current_boss['name']}")
-display_boss_image(current_boss["image"], width=500)
+boss_img_b64 = encode_image(current_boss["image"])
+st.markdown(
+    f"""
+    <div style='text-align:center; margin-top:10px;'>
+        <img src="data:image/png;base64,{boss_img_b64}" width="250">
+    </div>
+    """,
+    unsafe_allow_html=True
+)
 st.progress(current_hp / current_boss["hp"])
 st.write(f"HP: **{current_hp} / {current_boss['hp']}**")
 st.write(f"累計ダメージ: {total_damage}")
+
+# === ボス撃破メッセージ ===
+# ボスHPが0で、かつ今回の累計ダメージで初めて突破した場合
+if current_hp == 0 and cleared_bosses > len(df[df["damage"]>0]["damage"])//9999:  # 簡易判定
+    if cleared_bosses <= len(FRIEND_IMAGES):
+        st.success(f"🎊 {BOSS_LIST[cleared_bosses-1]['name']} を倒した！仲間が増えたよ！")
 
 # === 模試入力 ===
 st.markdown("---")
@@ -415,7 +445,7 @@ score = st.number_input("模試点数", min_value=0, max_value=300, step=1)
 
 if st.button("ダメージを与える！"):
     if mock_name and score > 0:
-        damage = int(score * 2)  # スコア→ダメージ換算
+        damage = int(score * 2)
         new_total = total_damage + damage
         append_mock_result(mock_name, score, damage, new_total)
         st.success(f"{mock_name} に {damage} ダメージを与えた！🔥")
