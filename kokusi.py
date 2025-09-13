@@ -20,10 +20,6 @@ now = datetime.datetime.now(JST)
 # 残り日数
 days_left = (exam_date - now).days
 
-FRIEND_IMAGES = [
-    "kurosiba.png",
-    "dora.png"
-]
 
 # ----------------------
 # 背景設定
@@ -38,7 +34,7 @@ def set_page_background_with_friend(background_file, egg_file, egg_size, friend_
         egg_encoded = base64.b64encode(f.read()).decode()
 
     # 仲間（リストで複数可）
-    friend_images = []
+    friend_images = ["kurosiba.png", "dora.png"]
     for fpath in friend_files:
         with open(fpath, "rb") as f:
             friend_images.append(f"url('data:image/png;base64,{base64.b64encode(f.read()).decode()}')")
@@ -179,7 +175,7 @@ exp_in_lvl = exp_within_level(tot_exp)
 
 # 背景と卵をキャラと同じ画像で設定
 egg_image = get_character_image(lvl)
-set_page_background_with_friend("mori.jpg", egg_image,egg_size="200px",friend_file=FRIEND_IMAGES)
+set_page_background_with_friend("mori.jpg", egg_image,egg_size="200px",friend_file)
 
 display_character(lvl)  # キャラを中央に表示
 
