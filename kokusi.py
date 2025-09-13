@@ -401,21 +401,9 @@ st.markdown(
 
 # === 現在ステータス計算 ===
 df = load_mock_data()
-total_damage = int(df["damage"].sum()) if not df.empty else 0
 
-# ボス進行状況
-remaining = total_damage
 boss_index = 0
-for i, boss in enumerate(BOSS_LIST):
-    if remaining < boss["hp"]:
-        boss_index = i
-        break
-    remaining -= boss["hp"]
-else:
-    boss_index = len(BOSS_LIST) - 1
-    remaining = BOSS_LIST[-1]["hp"]
 
-current_boss = BOSS_LIST[boss_index]
 current_hp = max(current_boss["hp"] - remaining, 0)
 cleared_bosses = min(boss_index, len(FRIEND_IMAGES))  # 倒した数
 
