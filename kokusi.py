@@ -20,43 +20,35 @@ now = datetime.datetime.now(JST)
 # 残り日数
 days_left = (exam_date - now).days
 
-FRIEND_IMAGES = [
-    "kurosiba.png",
-    "dora.png"
-]
 
 # ----------------------
 # 背景設定
 # ----------------------
-def set_page_background_with_friend(background_file, egg_file, egg_size, friend_files):
+def set_page_background_with_egg(background_file, egg_file,egg_size):
     # 背景
     with open(background_file, "rb") as f:
-        bg_encoded = base64.b64encode(f.read()).decode()
+        bg_data = f.read()
+    bg_encoded = base64.b64encode(bg_data).decode()
 
-    # 卵
+    # 卵（レベルに応じて変化）
     with open(egg_file, "rb") as f:
-        egg_encoded = base64.b64encode(f.read()).decode()
-
-    # 仲間（リストで複数可）
-    friend_images = []
-    for fpath in friend_files:
-        with open(fpath, "rb") as f:
-            friend_images.append(f"url('data:image/png;base64,{base64.b64encode(f.read()).decode()}')")
-
-    # CSS用に連結（卵→仲間→背景 の順で重ねる）
-    layers = ", ".join([f"url('data:image/png;base64,{egg_encoded}')"] + friend_images + [f"url('data:image/jpeg;base64,{bg_encoded}')"])
+        egg_data = f.read()
+    egg_encoded = base64.b64encode(egg_data).decode()
 
     st.markdown(
         f"""
         <style>
         .stApp {{
-            background-image: {layers};
-            background-repeat: no-repeat, repeat;
-            background-position: 55% 80%, center;
-            background-size: {egg_size}, {" ,".join(["auto"]*len(friend_images))}, cover;
+            background-image: url("data:image/png;base64,{egg_encoded}"),
+                              url("data:image/jpeg;base64,{bg_encoded}");
+            background-repeat: no-repeat, no-repeat;
+            background-position: 55% 80%, center; /* 卵の位置と背景の位置 */
+            background-size: {egg_size}, cover;         /* 卵は自動、背景は全体に */
             background-attachment: fixed;
         }}
-        * {{ color: white !important; }}
+        * {{
+            color: white !important;
+        }}
         div.stButton > button {{
             background-color: transparent;
             color: white;
@@ -70,6 +62,7 @@ def set_page_background_with_friend(background_file, egg_file, egg_size, friend_
         """,
         unsafe_allow_html=True
     )
+
 # ----------------------
 # キャラ表示（経験値に応じて切り替え）
 # ----------------------
@@ -179,7 +172,7 @@ exp_in_lvl = exp_within_level(tot_exp)
 
 # 背景と卵をキャラと同じ画像で設定
 egg_image = get_character_image(lvl)
-set_page_background_with_friend("mori.jpg", egg_image,egg_size="200px",friend_file=FRIEND_IMAGES)
+set_page_background_with_egg("mori.jpg", egg_image,egg_size="200px")
 
 display_character(lvl)  # キャラを中央に表示
 
@@ -460,12 +453,10 @@ if st.button("ダメージを与える！"):
     else:
         st.warning("模試名とスコアを入力してください")
 
-cleared_bosses = min(boss_index, len(FRIEND_IMAGES))
-
 # === 履歴表示 ===
 st.markdown("---")
 st.subheader("📝 履歴一覧")
 if not df.empty:
     st.dataframe(df.sort_values("date", ascending=False), use_container_width=True)
 else:
-    st.write("まだ模試履歴がありません")
+    st.write("まだ模試履歴がありません")ここからコード削らずに変更して
