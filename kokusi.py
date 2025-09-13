@@ -401,7 +401,7 @@ current_boss = BOSS_LIST[boss_index]
 current_hp = max(current_boss["hp"] - remaining, 0)
 
 st.subheader(f"💥 現在のボス: {current_boss['name']}")
-display_boss_image(current_boss["image"], width=250)
+display_boss_image(current_boss["image"], width=500)
 st.progress(current_hp / current_boss["hp"])
 st.write(f"HP: **{current_hp} / {current_boss['hp']}**")
 st.write(f"累計ダメージ: {total_damage}")
