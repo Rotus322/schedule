@@ -289,7 +289,7 @@ else:
 
 # === ボス設定 ===
 BOSS_LIST = [
-    {"name": "黒狼🐺", "hp": 1000, "image": "kokurou.png"},
+    {"name": "黒狼🐺", "hp": 500, "image": "kokurou.png"},
     {"name": "ドラゴン🐉", "hp": 1500, "image": "doragon.png"},
     {"name": "にわとりボス", "hp": 2000, "image": "niwatori.png"},
 ]
