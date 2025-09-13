@@ -449,9 +449,15 @@ if st.button("ダメージを与える！"):
         new_total = total_damage + damage
         append_mock_result(mock_name, score, damage, new_total)
         st.success(f"{mock_name} に {damage} ダメージを与えた！🔥")
-        st.experimental_rerun()
+        # rerun フラグをセット
+        st.session_state["rerun_needed"] = True
     else:
         st.warning("模試名とスコアを入力してください")
+
+# ボタン押下後に一度だけ rerun
+if st.session_state.get("rerun_needed"):
+    st.session_state["rerun_needed"] = False
+    st.experimental_rerun()
 
 # === 履歴表示 ===
 st.markdown("---")
