@@ -178,10 +178,22 @@ tot_exp = total_exp(df)
 lvl = current_level(tot_exp)
 exp_in_lvl = exp_within_level(tot_exp)
 
+# 倒したボス数を計算
+cleared_bosses = calculate_cleared_bosses(df, BOSS_LIST)
+
+# 現在のキャラ画像
+char_image = get_character_image(lvl)
+
+
 # 背景と卵をキャラと同じ画像で設定
 egg_image = get_character_image(lvl)
-set_page_background_with_egg("mori.jpg", egg_image,egg_size="200px")
-
+set_page_background_with_character_and_friends(
+    background_file="mori.jpg",
+    char_file=char_image,
+    char_size="200px",
+    friend_files=FRIEND_IMAGES,
+    num_friends=cleared_bosses
+)
 display_character(lvl)  # キャラを中央に表示
 
 st.markdown(
