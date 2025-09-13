@@ -230,7 +230,7 @@ if st.button("✅ 今日の勉強終わった！"):
     df = append_entry(10, "勉強終わった")
     tot_exp = total_exp(df)
     new_lvl = current_level(tot_exp)
-    st.success(f"経験値 +15！累計 {tot_exp} EXP")
+    st.success(f"経験値 +10！累計 {tot_exp} EXP")
     if new_lvl > st.session_state["last_level"]:
         st.balloons()
         st.success(f"🎉 レベルアップ！ Lv{st.session_state['last_level']} → Lv{new_lvl}")
@@ -445,7 +445,7 @@ score = st.number_input("模試点数", min_value=0, max_value=300, step=1)
 
 if st.button("ダメージを与える！"):
     if mock_name and score > 0:
-        damage = int(score * 2)
+        damage = int(score * lvl)
         new_total = total_damage + damage
         append_mock_result(mock_name, score, damage, new_total)
         st.success(f"{mock_name} に {damage} ダメージを与えた！🔥")
