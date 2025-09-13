@@ -12,6 +12,7 @@ JST=pytz.timezone("Asia/Tokyo")
 
 # 画面上で表示する仲間画像リスト
 FRIEND_IMAGES = ["kurosiba.png", "dora.png"]  # 必要に応じて増やす
+friend_files=FRIEND_IMAGE
 # 国試の日程
 exam_date = JST.localize(datetime.datetime(2026, 2, 15, 0, 0))
 
