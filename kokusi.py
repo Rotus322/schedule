@@ -457,7 +457,8 @@ if st.button("ダメージを与える！"):
 # ボタン押下後に一度だけ rerun
 if st.session_state.get("rerun_needed"):
     st.session_state["rerun_needed"] = False
-    st.experimental_rerun()
+    st.rerun()
+
 
 # === 履歴表示 ===
 st.markdown("---")
