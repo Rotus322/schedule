@@ -189,6 +189,19 @@ BOSS_LIST = [
 
 # 仲間画像（倒したボスの順番に対応）
 FRIEND_IMAGES = ["kurosiba.png","dora.png"]
+# === ボス撃破数を計算する関数 ===
+def calculate_cleared_bosses(df, boss_list):
+    total_damage = int(df["damage"].sum()) if not df.empty else 0
+    cleared = 0
+    remaining = total_damage
+    for boss in boss_list:
+        if remaining >= boss["hp"]:
+            cleared += 1
+            remaining -= boss["hp"]
+        else:
+            break
+    return cleared
+
 cleared_bosses = calculate_cleared_bosses(df, BOSS_LIST)
 # 背景と卵をキャラと同じ画像で設定
 egg_image = get_character_image(lvl)
