@@ -187,22 +187,9 @@ BOSS_LIST = [
     {"name": "にわとりボス", "hp": 2000, "image": "niwatori.png"},
 ]
 
-# 仲間画像（倒したボスの順番に対応）
-FRIEND_IMAGES = ["kurosiba.png","dora.png"]
-# === ボス撃破数を計算する関数 ===
-def calculate_cleared_bosses(df, boss_list):
-    total_damage = int(df["damage"].sum()) if not df.empty else 0
-    cleared = 0
-    remaining = total_damage
-    for boss in boss_list:
-        if remaining >= boss["hp"]:
-            cleared += 1
-            remaining -= boss["hp"]
-        else:
-            break
-    return cleared
 
-cleared_bosses = calculate_cleared_bosses(df, BOSS_LIST)
+
+
 # 背景と卵をキャラと同じ画像で設定
 egg_image = get_character_image(lvl)
 # 仲間キャラのリストを取得
@@ -403,7 +390,7 @@ st.markdown(
 df = load_mock_data()
 
 boss_index = 0
-
+cleared_bosses = calculate_cleared_bosses(df, BOSS_LIST)
 current_hp = max(current_boss["hp"] - remaining, 0)
 cleared_bosses = min(boss_index, len(FRIEND_IMAGES))  # 倒した数
 
@@ -471,7 +458,20 @@ if st.session_state.get("rerun_needed"):
     st.session_state["rerun_needed"] = False
     st.rerun()
 
-
+# 仲間画像（倒したボスの順番に対応）
+FRIEND_IMAGES = ["kurosiba.png","dora.png"]
+# === ボス撃破数を計算する関数 ===
+def calculate_cleared_bosses(df, boss_list):
+    total_damage = int(df["damage"].sum()) if not df.empty else 0
+    cleared = 0
+    remaining = total_damage
+    for boss in boss_list:
+        if remaining >= boss["hp"]:
+            cleared += 1
+            remaining -= boss["hp"]
+        else:
+            break
+    return cleared
 # === 履歴表示 ===
 st.markdown("---")
 st.subheader("📝 履歴一覧")
