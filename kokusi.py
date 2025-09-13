@@ -470,8 +470,8 @@ else:
 
 # 仲間画像の座標とサイズをあらかじめ定義
 FRIEND_POSITIONS = [
-    {"file": "kurosiba.png", "pos": "10% 70%", "size": "150px"},  # 1匹目
-    {"file": "dora.png",     "pos": "80% 70%", "size": "180px"},  # 2匹目
+    {"file": "kurosiba.png", "pos": "80% 80%", "size": "150px"},  # 1匹目
+    {"file": "dora.png",     "pos": "30% 100%", "size": "180px"},  # 2匹目
     {"file": "friend3.png",  "pos": "45% 20%", "size": "200px"},  # 3匹目
 ]
 def add_friend_backgrounds(cleared_bosses):
