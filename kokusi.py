@@ -508,19 +508,6 @@ def add_friend_backgrounds(cleared_bosses):
         unsafe_allow_html=True
     )
 
-# 🔑 既存背景情報をセッションに保存
-with open("mori.jpg", "rb") as f:
-    bg_encoded = base64.b64encode(f.read()).decode()
-with open(egg_image, "rb") as f:
-    egg_encoded = base64.b64encode(f.read()).decode()
-
-st.session_state["current_bg_image"] = (
-    f"url('data:image/png;base64,{egg_encoded}'), "
-    f"url('data:image/jpeg;base64,{bg_encoded}')"
-)
-st.session_state["current_bg_position"] = "55% 80%, center"
-st.session_state["current_bg_repeat"] = "no-repeat, no-repeat"
-st.session_state["current_bg_size"] = "10px, cover"
 
 # その上に仲間キャラを追加
 add_friend_backgrounds(cleared_bosses)
