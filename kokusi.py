@@ -338,14 +338,14 @@ def append_mock_result(mock_name, score, damage, total_damage):
         st.error(f"シート書き込み失敗: {e}")
 
 # === ボス画像表示 ===
-def display_boss_image(image_file, width=250):
+def display_boss_image(image_file, width=500):
     try:
         with open(image_file, "rb") as f:
             img_data = f.read()
         img_encoded = base64.b64encode(img_data).decode()
         st.markdown(
             f"""
-            <div style='text-align:center; margin-top:50px;'>
+            <div style='text-align:center; margin-top:20px;'>
                 <img src="data:image/png;base64,{img_encoded}" width="{width}">
             </div>
             """,
