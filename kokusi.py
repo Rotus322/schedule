@@ -459,4 +459,4 @@ st.subheader("📝 履歴一覧")
 if not df.empty:
     st.dataframe(df.sort_values("date", ascending=False), use_container_width=True)
 else:
-    st.write("まだ模試履歴がありません")ここからコード削らずに変更して
+    st.write("まだ模試履歴がありません")
