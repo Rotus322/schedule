@@ -467,42 +467,45 @@ if not df.empty:
     st.dataframe(df.sort_values("date", ascending=False), use_container_width=True)
 else:
     st.write("まだ模試履歴がありません")
-
+# 仲間画像の座標とサイズをあらかじめ定義
+FRIEND_POSITIONS = [
+    {"file": "kurosiba.png", "pos": "10% 70%", "size": "150px"},  # 1匹目
+    {"file": "dora.png",     "pos": "80% 70%", "size": "180px"},  # 2匹目
+    {"file": "friend3.png",  "pos": "45% 20%", "size": "200px"},  # 3匹目
+]
 def add_friend_backgrounds(cleared_bosses):
-    """倒したボスの仲間画像を背景に追加する"""
     if cleared_bosses <= 0:
         return
 
-    friend_layers = []
-    friend_positions = []
-    friend_sizes = []
+    layers, positions, sizes = [], [], []
 
-    # 仲間ごとの画像を読み込み
     for i in range(cleared_bosses):
-        with open(FRIEND_IMAGES[i], "rb") as f:
+        info = FRIEND_POSITIONS[i]       # 指定済み座標を取得
+        with open(info["file"], "rb") as f:
             img_b64 = base64.b64encode(f.read()).decode()
-        friend_layers.append(f"url('data:image/png;base64,{img_b64}')")
+        layers.append(f"url('data:image/png;base64,{img_b64}')")
+        positions.append(info["pos"])
+        sizes.append(info["size"])
 
-        # 位置やサイズを仲間ごとに調整（例：左右に分散）
-        friend_positions.append(f"{10 + i*20}% 80%")
-        friend_sizes.append("150px")
+    # 既存の背景レイヤーを後ろに追加
+    layers.append(st.session_state.get("current_bg_image", ""))
+    positions.append(st.session_state.get("current_bg_position", "center"))
+    sizes.append(st.session_state.get("current_bg_size", "cover"))
 
     st.markdown(
         f"""
         <style>
         .stApp {{
-            /* 既存の背景設定を保持したまま仲間を追加 */
-            background-image: {", ".join(friend_layers)}, {st.session_state.get("current_bg_image","")};
-            background-position: {", ".join(friend_positions)}, {st.session_state.get("current_bg_position","center")};
+            background-image: {", ".join(layers)};
+            background-position: {", ".join(positions)};
             background-repeat: no-repeat, {st.session_state.get("current_bg_repeat","no-repeat")};
-            background-size: {", ".join(friend_sizes)}, {st.session_state.get("current_bg_size","cover")};
+            background-size: {", ".join(sizes)};
             background-attachment: fixed;
         }}
         </style>
         """,
         unsafe_allow_html=True
     )
-
     # 既存の背景と卵を設定
 egg_image = get_character_image(lvl)
 set_page_background_with_egg("mori.jpg", egg_image, egg_size="200px")
