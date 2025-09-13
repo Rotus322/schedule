@@ -24,44 +24,7 @@ days_left = (exam_date - now).days
 # ----------------------
 # 背景設定
 # ----------------------
-def set_page_background_with_egg(background_file, egg_file,egg_size):
-    # 背景
-    with open(background_file, "rb") as f:
-        bg_data = f.read()
-    bg_encoded = base64.b64encode(bg_data).decode()
-
-    # 卵（レベルに応じて変化）
-    with open(egg_file, "rb") as f:
-        egg_data = f.read()
-    egg_encoded = base64.b64encode(egg_data).decode()
-
-    st.markdown(
-        f"""
-        <style>
-        .stApp {{
-            background-image: url("data:image/png;base64,{egg_encoded}"),
-                              url("data:image/jpeg;base64,{bg_encoded}");
-            background-repeat: no-repeat, no-repeat;
-            background-position: 55% 80%, center; /* 卵の位置と背景の位置 */
-            background-size: {egg_size}, cover;         /* 卵は自動、背景は全体に */
-            background-attachment: fixed;
-        }}
-        * {{
-            color: white !important;
-        }}
-        div.stButton > button {{
-            background-color: transparent;
-            color: white;
-            border: 2px solid white;
-            border-radius: 10px;
-        }}
-        div.stButton > button:hover {{
-            background-color: rgba(255, 255, 255, 0.2);
-        }}
-        </style>
-        """,
-        unsafe_allow_html=True
-    )def set_page_background_with_friends(background_file, egg_file, egg_size, friends_files):
+def set_page_background_with_friends(background_file, egg_file, egg_size, friends_files):
     """背景に森、卵、仲間キャラを重ねて表示"""
     layers = []
     positions = []
