@@ -10,8 +10,6 @@ import pytz
 
 JST=pytz.timezone("Asia/Tokyo") 
 
-# 画面上で表示する仲間画像リスト
-FRIEND_IMAGES = ["kurosiba.png", "dora.png"]  # 必要に応じて増やす
 
 # 国試の日程
 exam_date = JST.localize(datetime.datetime(2026, 2, 15, 0, 0))
@@ -26,38 +24,40 @@ days_left = (exam_date - now).days
 # ----------------------
 # 背景設定
 # ----------------------
-# ----------------------
-# 背景設定（倒した仲間だけ反映）
-# ----------------------
-def set_page_background_with_friend(background_file, egg_file, egg_size, friend_files, num_friends=0):
+def set_page_background_with_egg(background_file, egg_file,egg_size):
     # 背景
     with open(background_file, "rb") as f:
-        bg_encoded = base64.b64encode(f.read()).decode()
+        bg_data = f.read()
+    bg_encoded = base64.b64encode(bg_data).decode()
 
-    # 卵
+    # 卵（レベルに応じて変化）
     with open(egg_file, "rb") as f:
-        egg_encoded = base64.b64encode(f.read()).decode()
-
-    # 倒した仲間だけ追加
-    friend_images = []
-    for fpath in friend_files[:num_friends]:
-        with open(fpath, "rb") as f:
-            friend_images.append(f"url('data:image/png;base64,{base64.b64encode(f.read()).decode()}')")
-
-    # CSS用に連結（卵→仲間→背景 の順）
-    layers = ", ".join([f"url('data:image/png;base64,{egg_encoded}')"] + friend_images + [f"url('data:image/jpeg;base64,{bg_encoded}')"])
+        egg_data = f.read()
+    egg_encoded = base64.b64encode(egg_data).decode()
 
     st.markdown(
         f"""
         <style>
         .stApp {{
-            background-image: {layers};
-            background-repeat: no-repeat, repeat;
-            background-position: 55% 80%, center;
-            background-size: {egg_size}, {" ,".join(["auto"]*len(friend_images))}, cover;
+            background-image: url("data:image/png;base64,{egg_encoded}"),
+                              url("data:image/jpeg;base64,{bg_encoded}");
+            background-repeat: no-repeat, no-repeat;
+            background-position: 55% 80%, center; /* 卵の位置と背景の位置 */
+            background-size: {egg_size}, cover;         /* 卵は自動、背景は全体に */
             background-attachment: fixed;
         }}
-        * {{ color: white !important; }}
+        * {{
+            color: white !important;
+        }}
+        div.stButton > button {{
+            background-color: transparent;
+            color: white;
+            border: 2px solid white;
+            border-radius: 10px;
+        }}
+        div.stButton > button:hover {{
+            background-color: rgba(255, 255, 255, 0.2);
+        }}
         </style>
         """,
         unsafe_allow_html=True
@@ -172,7 +172,7 @@ exp_in_lvl = exp_within_level(tot_exp)
 
 # 背景と卵をキャラと同じ画像で設定
 egg_image = get_character_image(lvl)
-set_page_background_with_friend("mori.jpg", egg_image,egg_size="200px",friend_files=FRIEND_IMAGES)
+set_page_background_with_egg("mori.jpg", egg_image,egg_size="200px")
 
 display_character(lvl)  # キャラを中央に表示
 
@@ -294,6 +294,12 @@ BOSS_LIST = [
     {"name": "にわとりボス", "hp": 2000, "image": "niwatori.png"},
 ]
 
+# 仲間画像（倒したボスの順番に対応）
+FRIEND_IMAGES = [
+    "kurosiba.png",  
+    "dora.png",  # ひよこ撃破後
+    "friend3.png",  # にわとり撃破後
+]
 
 # === Google Sheets 接続 ===
 def connect_gsheets():
@@ -446,38 +452,6 @@ if st.button("ダメージを与える！"):
         st.experimental_rerun()
     else:
         st.warning("模試名とスコアを入力してください")
-
-cleared_bosses = min(boss_index, len(FRIEND_IMAGES))
-
-# ----------------------
-# 倒したボス数を計算
-# ----------------------
-total_damage = int(df["damage"].sum()) if not df.empty else 0
-
-remaining = total_damage
-boss_index = 0
-for i, boss in enumerate(BOSS_LIST):
-    if remaining < boss["hp"]:
-        boss_index = i
-        break
-    remaining -= boss["hp"]
-else:
-    boss_index = len(BOSS_LIST) - 1
-    remaining = BOSS_LIST[-1]["hp"]
-
-current_boss = BOSS_LIST[boss_index]
-current_hp = max(current_boss["hp"] - remaining, 0)
-cleared_bosses = min(boss_index, len(FRIEND_IMAGES))  # 倒した数
-
-
-egg_image = get_character_image(lvl)
-set_page_background_with_friend(
-    background_file="mori.jpg",
-    egg_file=egg_image,
-    egg_size="200px",
-    friend_files=FRIEND_IMAGES,
-    num_friends=cleared_bosses
-)
 
 # === 履歴表示 ===
 st.markdown("---")
