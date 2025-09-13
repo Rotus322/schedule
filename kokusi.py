@@ -180,6 +180,13 @@ tot_exp = total_exp(df)
 lvl = current_level(tot_exp)
 exp_in_lvl = exp_within_level(tot_exp)
 
+# === ボス設定 ===
+BOSS_LIST = [
+    {"name": "黒狼🐺", "hp": 500, "image": "kokurou.png"},
+    {"name": "ドラゴン🐉", "hp": 1500, "image": "doragon.png"},
+    {"name": "にわとりボス", "hp": 2000, "image": "niwatori.png"},
+]
+
 # 仲間画像（倒したボスの順番に対応）
 FRIEND_IMAGES = ["kurosiba.png","dora.png"]
 cleared_bosses = calculate_cleared_bosses(df, BOSS_LIST)
@@ -303,12 +310,6 @@ else:
         st.dataframe(df)
 
 
-# === ボス設定 ===
-BOSS_LIST = [
-    {"name": "黒狼🐺", "hp": 500, "image": "kokurou.png"},
-    {"name": "ドラゴン🐉", "hp": 1500, "image": "doragon.png"},
-    {"name": "にわとりボス", "hp": 2000, "image": "niwatori.png"},
-]
 
 
 # === Google Sheets 接続 ===
