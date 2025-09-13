@@ -36,7 +36,7 @@ def set_page_background_with_friend(background_file, egg_file, egg_size, friend_
         egg_encoded = base64.b64encode(f.read()).decode()
 
     # 仲間（リストで複数可）
-    friend_images = ["kurosiba.png", "dora.png"]
+    friend_images = []
     for fpath in friend_files:
         with open(fpath, "rb") as f:
             friend_images.append(f"url('data:image/png;base64,{base64.b64encode(f.read()).decode()}')")
@@ -177,7 +177,7 @@ exp_in_lvl = exp_within_level(tot_exp)
 
 # 背景と卵をキャラと同じ画像で設定
 egg_image = get_character_image(lvl)
-set_page_background_with_friend("mori.jpg", egg_image,egg_size="200px",friend_files=FRIEND_IMAGE)
+set_page_background_with_friend("mori.jpg", egg_image,egg_size="200px",friend_files=FRIEND_IMAGES)
 
 display_character(lvl)  # キャラを中央に表示
 
