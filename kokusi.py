@@ -24,54 +24,44 @@ days_left = (exam_date - now).days
 # ----------------------
 # 背景設定
 # ----------------------
-def set_page_background_with_friends(background_file, egg_file, egg_size, friends_files):
-    """背景に森、卵、仲間キャラを重ねて表示"""
-    layers = []
-    positions = []
-    sizes = []
-
-    # 1. 森
+def set_page_background_with_egg(background_file, egg_file,egg_size):
+    # 背景
     with open(background_file, "rb") as f:
-        bg_encoded = base64.b64encode(f.read()).decode()
-    layers.append(f"url('data:image/jpeg;base64,{bg_encoded}')")
-    positions.append("center")
-    sizes.append("cover")
+        bg_data = f.read()
+    bg_encoded = base64.b64encode(bg_data).decode()
 
-    # 2. 卵
+    # 卵（レベルに応じて変化）
     with open(egg_file, "rb") as f:
-        egg_encoded = base64.b64encode(f.read()).decode()
-    layers.insert(0, f"url('data:image/png;base64,{egg_encoded}')")
-    positions.insert(0, "55% 80%")
-    sizes.insert(0, egg_size)
+        egg_data = f.read()
+    egg_encoded = base64.b64encode(egg_data).decode()
 
-    # 3. 仲間キャラ
-    for i, friend_file in enumerate(friends_files):
-        with open(friend_file, "rb") as f:
-            fr_encoded = base64.b64encode(f.read()).decode()
-        layers.insert(0, f"url('data:image/png;base64,{fr_encoded}')")
-        # 位置は仲間ごとにずらす（例: 左右に散らす）
-        positions.insert(0, f"{20 + i*20}% 70%")
-        sizes.insert(0, "120px")
-
-    # CSS反映
     st.markdown(
         f"""
         <style>
         .stApp {{
-            background-image: {', '.join(layers)};
-            background-repeat: no-repeat;
-            background-position: {', '.join(positions)};
-            background-size: {', '.join(sizes)};
+            background-image: url("data:image/png;base64,{egg_encoded}"),
+                              url("data:image/jpeg;base64,{bg_encoded}");
+            background-repeat: no-repeat, no-repeat;
+            background-position: 55% 80%, center; /* 卵の位置と背景の位置 */
+            background-size: {egg_size}, cover;         /* 卵は自動、背景は全体に */
             background-attachment: fixed;
         }}
         * {{
             color: white !important;
         }}
+        div.stButton > button {{
+            background-color: transparent;
+            color: white;
+            border: 2px solid white;
+            border-radius: 10px;
+        }}
+        div.stButton > button:hover {{
+            background-color: rgba(255, 255, 255, 0.2);
+        }}
         </style>
         """,
         unsafe_allow_html=True
     )
-
 
 # ----------------------
 # キャラ表示（経験値に応じて切り替え）
@@ -180,19 +170,11 @@ tot_exp = total_exp(df)
 lvl = current_level(tot_exp)
 exp_in_lvl = exp_within_level(tot_exp)
 
-# === ボス設定 ===
-BOSS_LIST = [
-    {"name": "黒狼🐺", "hp": 500, "image": "kokurou.png"},
-    {"name": "ドラゴン🐉", "hp": 1500, "image": "doragon.png"},
-    {"name": "にわとりボス", "hp": 2000, "image": "niwatori.png"},
-]
-
-
-
-
 # 背景と卵をキャラと同じ画像で設定
 egg_image = get_character_image(lvl)
+set_page_background_with_egg("mori.jpg", egg_image,egg_size="200px")
 
+display_character(lvl)  # キャラを中央に表示
 
 st.markdown(
     """
@@ -305,7 +287,19 @@ else:
         st.dataframe(df)
 
 
+# === ボス設定 ===
+BOSS_LIST = [
+    {"name": "黒狼🐺", "hp": 500, "image": "kokurou.png"},
+    {"name": "ドラゴン🐉", "hp": 1500, "image": "doragon.png"},
+    {"name": "にわとりボス", "hp": 2000, "image": "niwatori.png"},
+]
 
+# 仲間画像（倒したボスの順番に対応）
+FRIEND_IMAGES = [
+    "kurosiba.png",  
+    "dora.png",  # ひよこ撃破後
+    "friend3.png",  # にわとり撃破後
+]
 
 # === Google Sheets 接続 ===
 def connect_gsheets():
@@ -383,9 +377,21 @@ st.markdown(
 
 # === 現在ステータス計算 ===
 df = load_mock_data()
+total_damage = int(df["damage"].sum()) if not df.empty else 0
 
+# ボス進行状況
+remaining = total_damage
 boss_index = 0
-cleared_bosses = calculate_cleared_bosses(df, BOSS_LIST)
+for i, boss in enumerate(BOSS_LIST):
+    if remaining < boss["hp"]:
+        boss_index = i
+        break
+    remaining -= boss["hp"]
+else:
+    boss_index = len(BOSS_LIST) - 1
+    remaining = BOSS_LIST[-1]["hp"]
+
+current_boss = BOSS_LIST[boss_index]
 current_hp = max(current_boss["hp"] - remaining, 0)
 cleared_bosses = min(boss_index, len(FRIEND_IMAGES))  # 倒した数
 
@@ -453,27 +459,7 @@ if st.session_state.get("rerun_needed"):
     st.session_state["rerun_needed"] = False
     st.rerun()
 
-# 仲間画像（倒したボスの順番に対応）
-FRIEND_IMAGES = ["kurosiba.png","dora.png"]
-# === ボス撃破数を計算する関数 ===
-def calculate_cleared_bosses(df, boss_list):
-    total_damage = int(df["damage"].sum()) if not df.empty else 0
-    cleared = 0
-    remaining = total_damage
-    for boss in boss_list:
-        if remaining >= boss["hp"]:
-            cleared += 1
-            remaining -= boss["hp"]
-        else:
-            break
-    return cleared
 
-# 仲間キャラのリストを取得
-friends_to_show = FRIEND_IMAGES[:cleared_bosses]
-
-# 背景を設定（森 + 卵 + 仲間）
-set_page_background_with_friends("mori.jpg", egg_image, "200px", friends_to_show)
-display_character(lvl)  # キャラを中央に表示
 # === 履歴表示 ===
 st.markdown("---")
 st.subheader("📝 履歴一覧")
