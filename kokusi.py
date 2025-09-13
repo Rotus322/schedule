@@ -454,18 +454,7 @@ def calculate_cleared_bosses(df, BOSS_LIST):
             break
     return cleared
 
-# === 倒したボス数に応じて背景に仲間を表示 ===
-cleared_bosses = calculate_cleared_bosses(df, BOSS_LIST)
 
-# 背景と卵の設定（倒したボス数だけ仲間表示）
-egg_image = get_character_image(lvl)  # 現在のキャラ画像
-set_page_background_with_friend(
-    background_file="mori.jpg",
-    egg_file=egg_image,
-    egg_size="200px",
-    friend_files=FRIEND_IMAGES,
-    num_friends=cleared_bosses
-)
 
 # === 模試入力 ===
 st.markdown("---")
