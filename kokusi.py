@@ -10,7 +10,8 @@ import pytz
 
 JST=pytz.timezone("Asia/Tokyo") 
 
-
+# 画面上で表示する仲間画像リスト
+FRIEND_IMAGES = ["kurosiba.png", "dora.png"]  # 必要に応じて増やす
 # 国試の日程
 exam_date = JST.localize(datetime.datetime(2026, 2, 15, 0, 0))
 
@@ -175,7 +176,7 @@ exp_in_lvl = exp_within_level(tot_exp)
 
 # 背景と卵をキャラと同じ画像で設定
 egg_image = get_character_image(lvl)
-set_page_background_with_friend("mori.jpg", egg_image,egg_size="200px",friend_files=friend_files)
+set_page_background_with_friend("mori.jpg", egg_image,egg_size="200px",friend_files=FRIEND_IMAGE)
 
 display_character(lvl)  # キャラを中央に表示
 
