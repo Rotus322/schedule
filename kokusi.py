@@ -9,7 +9,8 @@ import pytz
 
 
 JST=pytz.timezone("Asia/Tokyo") 
-
+FRIEND_IMAGES=["kurokoma.jpg,
+               "dora.jpg]
 
 # 国試の日程
 exam_date = JST.localize(datetime.datetime(2026, 2, 15, 0, 0))
@@ -24,44 +25,51 @@ days_left = (exam_date - now).days
 # ----------------------
 # 背景設定
 # ----------------------
-def set_page_background_with_egg(background_file, egg_file,egg_size):
-    # 背景
+def set_page_background_with_character_and_friends(background_file, char_file, char_size, friend_files, num_friends):
+    """
+    背景画像 + キャラ画像 + 仲間画像を Streamlit 背景として表示する
+    """
+    # 背景画像
     with open(background_file, "rb") as f:
         bg_data = f.read()
     bg_encoded = base64.b64encode(bg_data).decode()
 
-    # 卵（レベルに応じて変化）
-    with open(egg_file, "rb") as f:
-        egg_data = f.read()
-    egg_encoded = base64.b64encode(egg_data).decode()
+    # キャラ画像（卵）
+    with open(char_file, "rb") as f:
+        char_data = f.read()
+    char_encoded = base64.b64encode(char_data).decode()
 
-    st.markdown(
-        f"""
-        <style>
-        .stApp {{
-            background-image: url("data:image/png;base64,{egg_encoded}"),
-                              url("data:image/jpeg;base64,{bg_encoded}");
-            background-repeat: no-repeat, no-repeat;
-            background-position: 55% 80%, center; /* 卵の位置と背景の位置 */
-            background-size: {egg_size}, cover;         /* 卵は自動、背景は全体に */
-            background-attachment: fixed;
-        }}
-        * {{
-            color: white !important;
-        }}
-        div.stButton > button {{
-            background-color: transparent;
-            color: white;
-            border: 2px solid white;
-            border-radius: 10px;
-        }}
-        div.stButton > button:hover {{
-            background-color: rgba(255, 255, 255, 0.2);
-        }}
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
+    # 仲間画像
+    friend_html = ""
+    for i in range(min(num_friends, len(friend_files))):
+        with open(friend_files[i], "rb") as f:
+            f_data = f.read()
+        f_encoded = base64.b64encode(f_data).decode()
+        friend_html += f'<img src="data:image/png;base64,{f_encoded}" style="width:120px; margin:5px;">'
+
+    # CSS で背景とキャラと仲間を設定
+    st.markdown(f"""
+    <style>
+    .stApp {{
+        background-image: url("data:image/png;base64,{char_encoded}"),
+                          url("data:image/jpeg;base64,{bg_encoded}");
+        background-repeat: no-repeat, no-repeat;
+        background-position: 55% 80%, center;  /* キャラの位置, 背景の位置 */
+        background-size: {char_size}, cover;   /* キャラサイズ, 背景カバー */
+        background-attachment: fixed;
+    }}
+    .friend-container {{
+        position: fixed;
+        bottom: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1;
+        text-align: center;
+    }}
+    </style>
+    <div class="friend-container">{friend_html}</div>
+    """, unsafe_allow_html=True)
+
 
 # ----------------------
 # キャラ表示（経験値に応じて切り替え）
@@ -436,6 +444,32 @@ if current_hp == 0 and cleared_bosses > len(df[df["damage"]>0]["damage"])//9999:
     if cleared_bosses <= len(FRIEND_IMAGES):
         st.success(f"🎊 {BOSS_LIST[cleared_bosses-1]['name']} を倒した！仲間が増えたよ！")
 
+# === 倒したボス数を正確に計算する関数 ===
+def calculate_cleared_bosses(df, BOSS_LIST):
+    total_damage = int(df["damage"].sum()) if not df.empty else 0
+    remaining = total_damage
+    cleared = 0
+    for boss in BOSS_LIST:
+        if remaining >= boss["hp"]:
+            cleared += 1
+            remaining -= boss["hp"]
+        else:
+            break
+    return cleared
+
+# === 倒したボス数に応じて背景に仲間を表示 ===
+cleared_bosses = calculate_cleared_bosses(df, BOSS_LIST)
+
+# 背景と卵の設定（倒したボス数だけ仲間表示）
+egg_image = get_character_image(lvl)  # 現在のキャラ画像
+set_page_background_with_friend(
+    background_file="mori.jpg",
+    egg_file=egg_image,
+    egg_size="200px",
+    friend_files=FRIEND_IMAGES,
+    num_friends=cleared_bosses
+)
+
 # === 模試入力 ===
 st.markdown("---")
 st.subheader("📊 模試結果入力")
@@ -460,3 +494,18 @@ if not df.empty:
     st.dataframe(df.sort_values("date", ascending=False), use_container_width=True)
 else:
     st.write("まだ模試履歴がありません")
+
+# 倒したボス数を計算
+cleared_bosses = calculate_cleared_bosses(df, BOSS_LIST)
+
+# 現在のキャラ画像
+char_image = get_character_image(lvl)
+
+# 背景・キャラ・仲間を一括設定
+set_page_background_with_character_and_friends(
+    background_file="mori.jpg",
+    char_file=char_image,
+    char_size="200px",
+    friend_files=FRIEND_IMAGES,
+    num_friends=cleared_bosses
+)
