@@ -345,7 +345,7 @@ def display_boss_image(image_file, width=250):
         img_encoded = base64.b64encode(img_data).decode()
         st.markdown(
             f"""
-            <div style='text-align:center; margin-top:20px;'>
+            <div style='text-align:center; margin-top:50px;'>
                 <img src="data:image/png;base64,{img_encoded}" width="{width}">
             </div>
             """,
