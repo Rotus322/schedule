@@ -9,8 +9,8 @@ import pytz
 
 
 JST=pytz.timezone("Asia/Tokyo") 
-FRIEND_IMAGES=["kurokoma.jpg,
-               "dora.jpg]
+FRIEND_IMAGES=["kurokoma.jpg",
+               "dora.jpg"]
 
 # 国試の日程
 exam_date = JST.localize(datetime.datetime(2026, 2, 15, 0, 0))
