@@ -182,7 +182,7 @@ exp_in_lvl = exp_within_level(tot_exp)
 
 # 仲間画像（倒したボスの順番に対応）
 FRIEND_IMAGES = ["kurosiba.png","dora.png"]
-
+cleared_bosses = calculate_cleared_bosses(df, BOSS_LIST)
 # 背景と卵をキャラと同じ画像で設定
 egg_image = get_character_image(lvl)
 # 仲間キャラのリストを取得
