@@ -291,7 +291,7 @@ else:
 BOSS_LIST = [
     {"name": "黒狼🐺", "hp": 500, "image": "kokurou.png"},
     {"name": "ドラゴン🐉", "hp": 1500, "image": "doragon.png"},
-    {"name": "キメラ🦁🐦", "hp": 2000, "image": "raion.png"},
+    {"name": "キメラ🦁🐦", "hp": 2000, "image": "raion.png"}
 ]
 
 # 仲間画像（倒したボスの順番に対応）
