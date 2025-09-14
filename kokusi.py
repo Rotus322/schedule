@@ -76,7 +76,7 @@ def get_character_image(level):
         6: "koukou.png",
         7: "daigaku.png",
         8: "juken.png",
-        9: "kngosi.png"
+        9: "kangosi.png"
     }
     return emoji_map.get(min(level, max(emoji_map.keys())), "default.jpg")
 
