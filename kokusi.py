@@ -431,10 +431,14 @@ st.write(f"HP: **{current_hp} / {current_boss['hp']}**")
 st.write(f"累計ダメージ: {total_damage}")
 
 # === ボス撃破メッセージ ===
-# ボスHPが0で、かつ今回の累計ダメージで初めて突破した場合
-if current_hp == 0 and cleared_bosses > len(df[df["damage"]>0]["damage"])//9999:  # 簡易判定
-    if cleared_bosses <= len(FRIEND_IMAGES):
-        st.success(f"🎊 {BOSS_LIST[cleared_bosses-1]['name']} を倒した！仲間が増えたよ！")
+if "prev_cleared_bosses" not in st.session_state:
+    st.session_state["prev_cleared_bosses"] = 0
+
+if cleared_bosses > st.session_state["prev_cleared_bosses"]:
+    boss_name = BOSS_LIST[cleared_bosses-1]['name']
+    st.success(f"🎊 {boss_name} を倒した！仲間が増えたよ！")
+    st.session_state["prev_cleared_bosses"] = cleared_bosses
+
 
 # === 模試入力 ===
 st.markdown("---")
